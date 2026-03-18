@@ -16,18 +16,10 @@
       --bg-1: #050816;
       --bg-2: #0a1230;
       --bg-3: #17041f;
-      --glass: rgba(255,255,255,0.08);
-      --glass-2: rgba(255,255,255,0.04);
-      --stroke: rgba(255,255,255,0.09);
       --text: #f5f7ff;
-      --muted: rgba(245,247,255,0.68);
-      --pink: #f142c5;
-      --violet: #8d4dff;
-      --blue: #177dff;
-      --shadow: 0 18px 45px rgba(0,0,0,0.38);
-      --radius-xl: 32px;
-      --radius-lg: 24px;
-      --radius-md: 18px;
+      --muted: rgba(245, 247, 255, 0.68);
+      --stroke: rgba(255, 255, 255, 0.09);
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.38);
     }
 
     html {
@@ -75,15 +67,9 @@
     }
 
     @keyframes moveGlow {
-      0% {
-        transform: translate(-3%, -2%) scale(1);
-      }
-      50% {
-        transform: translate(4%, 3%) scale(1.08);
-      }
-      100% {
-        transform: translate(0%, 6%) scale(1.02);
-      }
+      0% { transform: translate(-3%, -2%) scale(1); }
+      50% { transform: translate(4%, 3%) scale(1.08); }
+      100% { transform: translate(0%, 6%) scale(1.02); }
     }
 
     .particles {
@@ -99,8 +85,8 @@
       width: 4px;
       height: 4px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.55);
-      box-shadow: 0 0 12px rgba(255,255,255,0.45);
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
       animation: rise linear infinite;
     }
 
@@ -191,17 +177,23 @@
       color: #f3f2ff;
     }
 
-    .menu-grid {
+    .menu-grid,
+    .cards {
       display: flex;
       flex-direction: column;
       gap: 18px;
+    }
+
+    button {
+      font-family: inherit;
     }
 
     .main-btn,
     .action-btn,
     .buy-btn,
     .ghost-btn,
-    .back-btn {
+    .back-btn,
+    .promo-chip {
       border: none;
       outline: none;
       cursor: pointer;
@@ -216,7 +208,8 @@
     .action-btn::before,
     .buy-btn::before,
     .ghost-btn::before,
-    .back-btn::before {
+    .back-btn::before,
+    .promo-chip::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -229,7 +222,8 @@
     .action-btn:hover::before,
     .buy-btn:hover::before,
     .ghost-btn:hover::before,
-    .back-btn:hover::before {
+    .back-btn:hover::before,
+    .promo-chip:hover::before {
       transform: translateX(135%);
     }
 
@@ -252,7 +246,8 @@
     .action-btn:hover,
     .buy-btn:hover,
     .ghost-btn:hover,
-    .back-btn:hover {
+    .back-btn:hover,
+    .promo-chip:hover {
       transform: translateY(-3px);
     }
 
@@ -260,7 +255,8 @@
     .action-btn:active,
     .buy-btn:active,
     .ghost-btn:active,
-    .back-btn:active {
+    .back-btn:active,
+    .promo-chip:active {
       transform: scale(0.985);
     }
 
@@ -290,13 +286,8 @@
       color: #fff;
     }
 
-    .cards {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .card {
+    .card,
+    .mini-card {
       position: relative;
       border-radius: 28px;
       padding: 20px;
@@ -311,7 +302,8 @@
       overflow: hidden;
     }
 
-    .card::after {
+    .card::after,
+    .mini-card::after {
       content: "";
       position: absolute;
       inset: auto -20% -55% auto;
@@ -348,11 +340,18 @@
       white-space: nowrap;
     }
 
-    .card-desc {
+    .card-desc,
+    .mini-card p {
       font-size: 14px;
       line-height: 1.55;
       color: var(--muted);
       margin-bottom: 16px;
+    }
+
+    .mini-card h3 {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 10px;
     }
 
     .price-box {
@@ -483,35 +482,6 @@
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.08);
       color: #fff;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .promo-chip:hover {
-      background: rgba(255,255,255,0.11);
-    }
-
-    .mini-card {
-      padding: 18px;
-      border-radius: 24px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
-        linear-gradient(145deg, rgba(18,22,44,0.96), rgba(50,18,85,0.95) 58%, rgba(112,29,110,0.90));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: var(--shadow);
-      margin-bottom: 16px;
-    }
-
-    .mini-card h3 {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .mini-card p {
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 14px;
     }
 
     .bonus-price {
@@ -575,17 +545,17 @@
       <div class="section-title">Выберите категорию</div>
 
       <div class="menu-grid">
-        <button class="main-btn" onclick="showPanel('privilegesPanel')">Привилегии</button>
-        <button class="main-btn" onclick="showPanel('shopPanel')">Магазин</button>
-        <button class="main-btn" onclick="showPanel('bonusPanel')">Бонусы</button>
-        <button class="main-btn" onclick="showPanel('complaintPanel')">Жалоба</button>
-        <button class="main-btn" onclick="openTelegramChannel()">Телеграм-канал</button>
+        <button type="button" class="main-btn nav-btn" data-panel="privilegesPanel">Привилегии</button>
+        <button type="button" class="main-btn nav-btn" data-panel="shopPanel">Магазин</button>
+        <button type="button" class="main-btn nav-btn" data-panel="bonusPanel">Бонусы</button>
+        <button type="button" class="main-btn nav-btn" data-panel="complaintPanel">Жалоба</button>
+        <button type="button" class="main-btn" id="channelBtn">Телеграм-канал</button>
       </div>
     </section>
 
     <section id="privilegesPanel" class="panel">
       <div class="toolbar">
-        <button class="back-btn" onclick="showPanel('homePanel')">←</button>
+        <button type="button" class="back-btn back-home">←</button>
         <div class="toolbar-title">Привилегии</div>
       </div>
 
@@ -595,9 +565,7 @@
             <div class="card-name">PRIME</div>
             <div class="tag">СТАРТ</div>
           </div>
-          <div class="card-desc">
-            Базовая привилегия для приятной игры на сервере. Хороший старт и красивый статус.
-          </div>
+          <div class="card-desc">Базовая привилегия для приятной игры на сервере. Хороший старт и красивый статус.</div>
 
           <div class="price-box">
             <div>
@@ -610,23 +578,23 @@
 
           <div class="field">
             <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник" />
+            <input class="input user-nick" type="text" placeholder="Введите ник">
           </div>
 
           <div class="field">
             <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10" />
+            <input class="input promo-input" type="text" placeholder="Например: TILE10">
             <div class="promo-help">Скидка применяется сразу</div>
             <div class="promo-list">
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'TILE10')">TILE10</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'RUSH20')">RUSH20</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'LUXE30')">LUXE30</button>
+              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
+              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
+              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
             </div>
           </div>
 
           <div class="card-actions">
-            <button class="buy-btn" onclick="buyProduct(this)">Купить</button>
-            <button class="ghost-btn" onclick="copyBuyText(this)">Копировать текст</button>
+            <button type="button" class="buy-btn">Купить</button>
+            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
           </div>
           <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
         </div>
@@ -636,9 +604,7 @@
             <div class="card-name">HERO</div>
             <div class="tag">ПОПУЛЯРНО</div>
           </div>
-          <div class="card-desc">
-            Более сильный статус с дополнительными возможностями. Отличный вариант для активной игры.
-          </div>
+          <div class="card-desc">Более сильный статус с дополнительными возможностями. Отличный вариант для активной игры.</div>
 
           <div class="price-box">
             <div>
@@ -651,23 +617,23 @@
 
           <div class="field">
             <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник" />
+            <input class="input user-nick" type="text" placeholder="Введите ник">
           </div>
 
           <div class="field">
             <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10" />
+            <input class="input promo-input" type="text" placeholder="Например: TILE10">
             <div class="promo-help">Скидка применяется сразу</div>
             <div class="promo-list">
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'TILE10')">TILE10</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'RUSH20')">RUSH20</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'LUXE30')">LUXE30</button>
+              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
+              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
+              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
             </div>
           </div>
 
           <div class="card-actions">
-            <button class="buy-btn" onclick="buyProduct(this)">Купить</button>
-            <button class="ghost-btn" onclick="copyBuyText(this)">Копировать текст</button>
+            <button type="button" class="buy-btn">Купить</button>
+            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
           </div>
           <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
         </div>
@@ -677,9 +643,7 @@
             <div class="card-name">DIAMOND</div>
             <div class="tag">ТОП</div>
           </div>
-          <div class="card-desc">
-            Продвинутая привилегия для тех, кто хочет максимум удобства, статуса и крутой игры.
-          </div>
+          <div class="card-desc">Продвинутая привилегия для тех, кто хочет максимум удобства, статуса и крутой игры.</div>
 
           <div class="price-box">
             <div>
@@ -692,23 +656,23 @@
 
           <div class="field">
             <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник" />
+            <input class="input user-nick" type="text" placeholder="Введите ник">
           </div>
 
           <div class="field">
             <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10" />
+            <input class="input promo-input" type="text" placeholder="Например: TILE10">
             <div class="promo-help">Скидка применяется сразу</div>
             <div class="promo-list">
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'TILE10')">TILE10</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'RUSH20')">RUSH20</button>
-              <button class="promo-chip" type="button" onclick="setPromo(this, 'LUXE30')">LUXE30</button>
+              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
+              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
+              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
             </div>
           </div>
 
           <div class="card-actions">
-            <button class="buy-btn" onclick="buyProduct(this)">Купить</button>
-            <button class="ghost-btn" onclick="copyBuyText(this)">Копировать текст</button>
+            <button type="button" class="buy-btn">Купить</button>
+            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
           </div>
           <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
         </div>
@@ -718,11 +682,32 @@
             <div class="card-name">LUXE</div>
             <div class="tag">PREMIUM</div>
           </div>
-          <div class="card-desc">
-            Самая дорогая и престижная привилегия. Для тех, кто хочет прям максимальный статус.
-          </div>
+          <div class="card-desc">Самая дорогая и престижная привилегия. Для тех, кто хочет прям максимальный статус.</div>
 
           <div class="price-box">
             <div>
               <div class="price-label">Цена</div>
-              <div class="price
+              <div class="price-old"></div>
+              <div class="price-new">149₽</div>
+            </div>
+            <div class="discount-badge">Без скидки</div>
+          </div>
+
+          <div class="field">
+            <label>Ваш ник</label>
+            <input class="input user-nick" type="text" placeholder="Введите ник">
+          </div>
+
+          <div class="field">
+            <label>Промокод</label>
+            <input class="input promo-input" type="text" placeholder="Например: TILE10">
+            <div class="promo-help">Скидка применяется сразу</div>
+            <div class="promo-list">
+              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
+              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
+              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button type="button" class="buy-
