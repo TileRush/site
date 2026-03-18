@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TileRush Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 28px 20px 40px;
+      position: relative;
+    }
+
+    .balance {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c3aed, #ec4899);
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.25);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 26px;
+    }
+
+    .balance span {
+      font-size: 20px;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .title h1 {
+      font-size: 42px;
+      line-height: 1.15;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 25px;
+      font-weight: 800;
+      margin-bottom: 34px;
+      color: #f8fafc;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      height: 108px;
+      border: none;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #6d28d9 45%, #db2777 100%);
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(109, 40, 217, 0.25);
+      transition: 0.2s ease;
+    }
+
+    .menu-btn:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 18px 30px rgba(236, 72, 153, 0.28);
+    }
+
+    .menu-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        padding: 24px 16px 36px;
+      }
+
+      .title h1 {
+        font-size: 34px;
+      }
+
+      .subtitle {
+        font-size: 21px;
+      }
+
+      .menu-btn {
+        height: 96px;
+        font-size: 22px;
+        border-radius: 24px;
+      }
+
+      .balance {
+        font-size: 21px;
+        padding: 12px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="balance">💎 <span>0 тенге</span></div>
+
+    <div class="title">
+      <h1>🟪 Магазин<br>TileRush</h1>
+    </div>
+
+    <div class="subtitle">Выберите категорию:</div>
+
+    <div class="menu">
+      <button class="menu-btn">Привилегии</button>
+      <button class="menu-btn">Магазин</button>
+      <button class="menu-btn">Бонусы</button>
+      <button class="menu-btn">Жалоба</button>
+      <button class="menu-btn">Телеграм-канал</button>
+    </div>
+  </div>
+</body>
+      </html>
