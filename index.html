@@ -1,1137 +1,245 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TileRush</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    :root {
-      --bg-1: #050816;
-      --bg-2: #0a1230;
-      --bg-3: #17041f;
-      --text: #f5f7ff;
-      --muted: rgba(245, 247, 255, 0.68);
-      --stroke: rgba(255, 255, 255, 0.09);
-      --shadow: 0 18px 45px rgba(0, 0, 0, 0.38);
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      color: var(--text);
-      font-family: Inter, Arial, sans-serif;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(136, 46, 255, 0.28), transparent 26%),
-        radial-gradient(circle at 80% 18%, rgba(21, 125, 255, 0.22), transparent 28%),
-        radial-gradient(circle at 50% 85%, rgba(255, 31, 149, 0.18), transparent 30%),
-        linear-gradient(145deg, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      inset: -20%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(70px);
-      opacity: 0.9;
-      animation: moveGlow 18s ease-in-out infinite alternate;
-    }
-
-    body::before {
-      background:
-        radial-gradient(circle, rgba(152, 76, 255, 0.20) 0%, transparent 42%),
-        radial-gradient(circle, rgba(255, 66, 198, 0.12) 0%, transparent 30%);
-      transform: translate(-8%, -5%);
-    }
-
-    body::after {
-      background:
-        radial-gradient(circle, rgba(0, 128, 255, 0.14) 0%, transparent 40%),
-        radial-gradient(circle, rgba(123, 0, 255, 0.10) 0%, transparent 28%);
-      animation-duration: 22s;
-      transform: translate(10%, 8%);
-    }
-
-    @keyframes moveGlow {
-      0% { transform: translate(-3%, -2%) scale(1); }
-      50% { transform: translate(4%, 3%) scale(1.08); }
-      100% { transform: translate(0%, 6%) scale(1.02); }
-    }
-
-    .particles {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .particles span {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.55);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
-      animation: rise linear infinite;
-    }
-
-    .particles span:nth-child(1){ left:5%; top:110%; animation-duration:16s; animation-delay:-3s; }
-    .particles span:nth-child(2){ left:12%; top:112%; animation-duration:19s; animation-delay:-7s; }
-    .particles span:nth-child(3){ left:23%; top:108%; animation-duration:14s; animation-delay:-5s; }
-    .particles span:nth-child(4){ left:34%; top:111%; animation-duration:18s; animation-delay:-9s; }
-    .particles span:nth-child(5){ left:48%; top:113%; animation-duration:15s; animation-delay:-4s; }
-    .particles span:nth-child(6){ left:57%; top:109%; animation-duration:21s; animation-delay:-8s; }
-    .particles span:nth-child(7){ left:68%; top:114%; animation-duration:17s; animation-delay:-11s; }
-    .particles span:nth-child(8){ left:79%; top:110%; animation-duration:13s; animation-delay:-6s; }
-    .particles span:nth-child(9){ left:90%; top:112%; animation-duration:20s; animation-delay:-10s; }
-    .particles span:nth-child(10){ left:95%; top:107%; animation-duration:22s; animation-delay:-2s; }
-
-    @keyframes rise {
-      0% {
-        transform: translateY(0) scale(0.7);
-        opacity: 0;
-      }
-      8% {
-        opacity: 0.85;
-      }
-      80% {
-        opacity: 0.3;
-      }
-      100% {
-        transform: translateY(-125vh) scale(1.4);
-        opacity: 0;
-      }
-    }
-
-    .app {
-      position: relative;
-      z-index: 2;
-      max-width: 520px;
-      margin: 0 auto;
-      min-height: 100vh;
-      padding: 26px 16px 40px;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 46px 10px 22px;
-    }
-
-    .hero h1 {
-      font-size: 54px;
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: 0.3px;
-      background: linear-gradient(180deg, #ffffff 0%, #e7deff 55%, #caaeff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
-    }
-
-    .hero p {
-      font-size: 17px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .panel {
-      display: none;
-      animation: fadeUp 0.35s ease;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 21px;
-      font-weight: 800;
-      margin: 22px 0 22px;
-      color: #f3f2ff;
-    }
-
-    .menu-grid,
-    .cards {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    .main-btn,
-    .action-btn,
-    .buy-btn,
-    .ghost-btn,
-    .back-btn,
-    .promo-chip {
-      border: none;
-      outline: none;
-      cursor: pointer;
-      color: #fff;
-      font-weight: 800;
-      transition: 0.22s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .main-btn::before,
-    .action-btn::before,
-    .buy-btn::before,
-    .ghost-btn::before,
-    .back-btn::before,
-    .promo-chip::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 15%, rgba(255,255,255,0.14) 50%, transparent 85%);
-      transform: translateX(-135%);
-      transition: transform 0.7s ease;
-    }
-
-    .main-btn:hover::before,
-    .action-btn:hover::before,
-    .buy-btn:hover::before,
-    .ghost-btn:hover::before,
-    .back-btn:hover::before,
-    .promo-chip:hover::before {
-      transform: translateX(135%);
-    }
-
-    .main-btn {
-      width: 100%;
-      min-height: 104px;
-      border-radius: 30px;
-      font-size: 23px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-        linear-gradient(90deg, rgba(27,24,45,0.96) 0%, rgba(100,56,181,0.95) 52%, rgba(204,55,163,0.95) 100%);
-      border: 1px solid rgba(255,255,255,0.09);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        0 16px 36px rgba(0,0,0,0.35),
-        0 0 28px rgba(173, 92, 255, 0.12);
-    }
-
-    .main-btn:hover,
-    .action-btn:hover,
-    .buy-btn:hover,
-    .ghost-btn:hover,
-    .back-btn:hover,
-    .promo-chip:hover {
-      transform: translateY(-3px);
-    }
-
-    .main-btn:active,
-    .action-btn:active,
-    .buy-btn:active,
-    .ghost-btn:active,
-    .back-btn:active,
-    .promo-chip:active {
-      transform: scale(0.985);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 4px 0 18px;
-    }
-
-    .back-btn {
-      min-width: 48px;
-      height: 48px;
-      padding: 0 18px;
-      border-radius: 16px;
-      font-size: 20px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03)),
-        linear-gradient(135deg, rgba(35,40,72,0.95), rgba(71,32,124,0.95));
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-    }
-
-    .toolbar-title {
-      font-size: 24px;
-      font-weight: 900;
-      color: #fff;
-    }
-
-    .card,
-    .mini-card {
-      position: relative;
-      border-radius: 28px;
-      padding: 20px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)),
-        linear-gradient(145deg, rgba(18,22,44,0.96), rgba(52,20,85,0.95) 58%, rgba(130,29,110,0.95));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        0 20px 38px rgba(0,0,0,0.34),
-        0 0 30px rgba(163, 82, 255, 0.10);
-      overflow: hidden;
-    }
-
-    .card::after,
-    .mini-card::after {
-      content: "";
-      position: absolute;
-      inset: auto -20% -55% auto;
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
-      filter: blur(10px);
-      pointer-events: none;
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-
-    .card-name {
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 0.4px;
-    }
-
-    .tag {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-      background: linear-gradient(135deg, rgba(139,77,255,0.75), rgba(241,66,197,0.75));
-      border: 1px solid rgba(255,255,255,0.12);
-      white-space: nowrap;
-    }
-
-    .card-desc,
-    .mini-card p {
-      font-size: 14px;
-      line-height: 1.55;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-
-    .mini-card h3 {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .price-box {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .price-label {
-      font-size: 13px;
-      color: rgba(255,255,255,0.58);
-      margin-bottom: 4px;
-    }
-
-    .price-old {
-      font-size: 15px;
-      color: rgba(255,255,255,0.38);
-      text-decoration: line-through;
-      margin-bottom: 3px;
-      min-height: 18px;
-    }
-
-    .price-new {
-      font-size: 31px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .discount-badge {
-      padding: 8px 12px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 900;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.10);
-      color: #fff;
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.72);
-      margin-bottom: 8px;
-    }
-
-    .input {
-      width: 100%;
-      height: 50px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      outline: none;
-      background: rgba(255,255,255,0.06);
-      color: #fff;
-      padding: 0 16px;
-      font-size: 15px;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-      transition: 0.2s ease;
-    }
-
-    .input::placeholder {
-      color: rgba(255,255,255,0.36);
-    }
-
-    .input:focus {
-      border-color: rgba(191,156,255,0.42);
-      box-shadow: 0 0 0 3px rgba(155,91,255,0.13);
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .buy-btn,
-    .ghost-btn,
-    .action-btn {
-      flex: 1;
-      min-height: 52px;
-      border-radius: 16px;
-      font-size: 15px;
-      box-shadow: var(--shadow);
-    }
-
-    .buy-btn,
-    .action-btn {
-      background: linear-gradient(135deg, #7c4dff, #f142c5);
-    }
-
-    .ghost-btn {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .note {
-      font-size: 12px;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.52);
-      margin-top: 12px;
-    }
-
-    .promo-help {
-      font-size: 12px;
-      color: rgba(255,255,255,0.55);
-      margin-top: 6px;
-    }
-
-    .promo-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .promo-chip {
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
-    }
-
-    .bonus-price {
-      font-size: 28px;
-      font-weight: 900;
-      margin: 14px 0 8px;
-    }
-
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-      margin: 16px 0;
-    }
-
-    .footer-space {
-      height: 20px;
-    }
-
-    @media (max-width: 520px) {
-      .hero {
-        padding-top: 52px;
-      }
-
-      .hero h1 {
-        font-size: 48px;
-      }
-
-      .card-name {
-        font-size: 23px;
-      }
-
-      .main-btn {
-        min-height: 96px;
-        font-size: 21px;
-        border-radius: 28px;
-      }
-
-      .price-new {
-        font-size: 28px;
-      }
-
-      .toolbar-title {
-        font-size: 22px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STAFF</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: white;
+}
+
+/* контейнер */
+.container {
+    padding: 15px;
+    max-width: 500px;
+    margin: auto;
+}
+
+/* логотип */
+.logo {
+    width: 180px;
+    display: block;
+    margin: 10px auto;
+}
+
+/* баннер */
+.banner {
+    background: linear-gradient(135deg, red, #ff3c3c);
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* кнопки */
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #1a1a1a;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: red;
+}
+
+/* нижняя кнопка */
+.bottom-btn {
+    width: 100%;
+    padding: 12px;
+    background: #222;
+    border-radius: 12px;
+    border: none;
+    color: white;
+}
+
+/* страницы */
+.page {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+/* карточки */
+.card {
+    background: #1a1a1a;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.price {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* поле */
+input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.order-btn {
+    width: 100%;
+    padding: 10px;
+    background: red;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
-  <div class="particles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-
-  <div class="app">
-    <section id="homePanel" class="panel active">
-      <div class="hero">
-        <h1>TileRush</h1>
-        <p>Игровой магазин сервера</p>
-      </div>
-
-      <div class="section-title">Выберите категорию</div>
-
-      <div class="menu-grid">
-        <button type="button" class="main-btn nav-btn" data-panel="privilegesPanel">Привилегии</button>
-        <button type="button" class="main-btn nav-btn" data-panel="shopPanel">Магазин</button>
-        <button type="button" class="main-btn nav-btn" data-panel="bonusPanel">Бонусы</button>
-        <button type="button" class="main-btn nav-btn" data-panel="complaintPanel">Жалоба</button>
-        <button type="button" class="main-btn" id="channelBtn">Телеграм-канал</button>
-      </div>
-    </section>
-
-    <section id="privilegesPanel" class="panel">
-      <div class="toolbar">
-        <button type="button" class="back-btn back-home">←</button>
-        <div class="toolbar-title">Привилегии</div>
-      </div>
-
-      <div class="cards">
-        <div class="card product-card" data-name="PRIME" data-price="19">
-          <div class="card-top">
-            <div class="card-name">PRIME</div>
-            <div class="tag">СТАРТ</div>
-          </div>
-          <div class="card-desc">Базовая привилегия для приятной игры на сервере. Хороший старт и красивый статус.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">19₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-help">Скидка применяется сразу</div>
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-          <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
-        </div>
-
-        <div class="card product-card" data-name="HERO" data-price="29">
-          <div class="card-top">
-            <div class="card-name">HERO</div>
-            <div class="tag">ПОПУЛЯРНО</div>
-          </div>
-          <div class="card-desc">Более сильный статус с дополнительными возможностями. Отличный вариант для активной игры.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">29₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-help">Скидка применяется сразу</div>
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-          <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
-        </div>
-
-        <div class="card product-card" data-name="DIAMOND" data-price="69">
-          <div class="card-top">
-            <div class="card-name">DIAMOND</div>
-            <div class="tag">ТОП</div>
-          </div>
-          <div class="card-desc">Продвинутая привилегия для тех, кто хочет максимум удобства, статуса и крутой игры.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">69₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-help">Скидка применяется сразу</div>
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-          <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
-        </div>
-
-        <div class="card product-card" data-name="LUXE" data-price="149">
-          <div class="card-top">
-            <div class="card-name">LUXE</div>
-            <div class="tag">PREMIUM</div>
-          </div>
-          <div class="card-desc">Самая дорогая и престижная привилегия. Для тех, кто хочет прям максимальный статус.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">149₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-help">Скидка применяется сразу</div>
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-              <button type="button" class="promo-chip" data-promo="LUXE30">LUXE30</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-          <div class="note">После нажатия откроется Telegram с готовым сообщением.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="shopPanel" class="panel">
-      <div class="toolbar">
-        <button type="button" class="back-btn back-home">←</button>
-        <div class="toolbar-title">Магазин</div>
-      </div>
-
-      <div class="cards">
-        <div class="card product-card" data-name="Кейс с монетами" data-price="39">
-          <div class="card-top">
-            <div class="card-name">Кейс с монетами</div>
-            <div class="tag">НОВОЕ</div>
-          </div>
-          <div class="card-desc">Внутриигровой набор для старта. Можно потом заменить на что угодно.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">39₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-        </div>
-
-        <div class="card product-card" data-name="Набор ресурсов" data-price="59">
-          <div class="card-top">
-            <div class="card-name">Набор ресурсов</div>
-            <div class="tag">ВЫГОДНО</div>
-          </div>
-          <div class="card-desc">Пак с полезными предметами для сервера. Временно оставил как пример.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">59₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-        </div>
-
-        <div class="card product-card" data-name="Спавнер-бокс" data-price="99">
-          <div class="card-top">
-            <div class="card-name">Спавнер-бокс</div>
-            <div class="tag">ЭПИК</div>
-          </div>
-          <div class="card-desc">Редкий набор для тех, кто хочет бустануть прогресс. Потом заменим на твои реальные товары.</div>
-
-          <div class="price-box">
-            <div>
-              <div class="price-label">Цена</div>
-              <div class="price-old"></div>
-              <div class="price-new">99₽</div>
-            </div>
-            <div class="discount-badge">Без скидки</div>
-          </div>
-
-          <div class="field">
-            <label>Ваш ник</label>
-            <input class="input user-nick" type="text" placeholder="Введите ник">
-          </div>
-
-          <div class="field">
-            <label>Промокод</label>
-            <input class="input promo-input" type="text" placeholder="Например: TILE10">
-            <div class="promo-list">
-              <button type="button" class="promo-chip" data-promo="TILE10">TILE10</button>
-              <button type="button" class="promo-chip" data-promo="RUSH20">RUSH20</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button type="button" class="buy-btn">Купить</button>
-            <button type="button" class="ghost-btn copy-btn">Копировать текст</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="bonusPanel" class="panel">
-      <div class="toolbar">
-        <button type="button" class="back-btn back-home">←</button>
-        <div class="toolbar-title">Бонусы</div>
-      </div>
-
-      <div class="mini-card">
-        <h3>Бонус за подписку</h3>
-        <p>Подпишитесь на Telegram-канал и получите бонус на сервере. Укажите свой ник и отправьте заявку.</p>
-        <div class="bonus-price">+ Бонус игроку</div>
-
-        <div class="field">
-          <label>Ваш ник</label>
-          <input id="bonusNick" class="input" type="text" placeholder="Введите ник">
-        </div>
-
-        <div class="card-actions">
-          <button type="button" class="action-btn" id="bonusSendBtn">Я подписался</button>
-          <button type="button" class="ghost-btn" id="bonusChannelBtn">Открыть канал</button>
-        </div>
-
-        <div class="note">Отправится сообщение: «я подписался на канал, мой ник ... , проверьте подписку».</div>
-      </div>
-
-      <div class="mini-card">
-        <h3>Ежедневный бонус</h3>
-        <p>Пока сделал временный блок. Потом можно заменить на кейсы, монеты, промокоды или награды за активность.</p>
-        <div class="divider"></div>
-        <div class="card-actions">
-          <button type="button" class="ghost-btn" id="bonusInfoBtn">Подробнее</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="complaintPanel" class="panel">
-      <div class="toolbar">
-        <button type="button" class="back-btn back-home">←</button>
-        <div class="toolbar-title">Жалоба</div>
-      </div>
-
-      <div class="mini-card">
-        <h3>Подать жалобу</h3>
-        <p>Напишите свой ник, ник нарушителя и кратко опишите ситуацию. Пока сделал отправку в Telegram, потом можно будет подключить форму или бота.</p>
-
-        <div class="field">
-          <label>Ваш ник</label>
-          <input id="complaintMyNick" class="input" type="text" placeholder="Ваш ник">
-        </div>
-
-        <div class="field">
-          <label>Ник нарушителя</label>
-          <input id="complaintTargetNick" class="input" type="text" placeholder="Ник нарушителя">
-        </div>
-
-        <div class="field">
-          <label>Описание</label>
-          <input id="complaintText" class="input" type="text" placeholder="Кратко опишите ситуацию">
-        </div>
-
-        <div class="card-actions">
-          <button type="button" class="action-btn" id="complaintSendBtn">Отправить жалобу</button>
-          <button type="button" class="ghost-btn" id="complaintClearBtn">Очистить</button>
-        </div>
-
-        <div class="note">Жалоба откроется в Telegram с готовым текстом.</div>
-      </div>
-
-      <div class="mini-card">
-        <h3>Правила подачи</h3>
-        <p>Укажите ники и нормальное описание. Позже сюда можно добавить скриншоты, ссылки и выбор категории нарушения.</p>
-      </div>
-    </section>
-
-    <div class="footer-space"></div>
-  </div>
-
-  <script>
-    (function () {
-      const TELEGRAM_USER = "seventeenlanguage";
-      const TELEGRAM_CHANNEL = "https://t.me/seventeenlanguage";
-
-      const promoMap = {
-        TILE10: 10,
-        RUSH20: 20,
-        LUXE30: 30
-      };
-
-      function showPanel(id) {
-        const panels = document.querySelectorAll(".panel");
-        panels.forEach(panel => panel.classList.remove("active"));
-
-        const target = document.getElementById(id);
-        if (target) {
-          target.classList.add("active");
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      }
-
-      function openTelegramChannel() {
-        window.location.href = TELEGRAM_CHANNEL;
-      }
-
-      function normalizePromo(code) {
-        return String(code || "").trim().toUpperCase();
-      }
-
-      function getDiscountByPromo(code) {
-        const normalized = normalizePromo(code);
-        return promoMap[normalized] || 0;
-      }
-
-      function calcDiscountedPrice(price, discount) {
-        return Math.max(0, Math.round(price * (100 - discount) / 100));
-      }
-
-      function updateCardPrice(card) {
-        const basePrice = Number(card.dataset.price);
-        const promoInput = card.querySelector(".promo-input");
-        const priceOld = card.querySelector(".price-old");
-        const priceNew = card.querySelector(".price-new");
-        const discountBadge = card.querySelector(".discount-badge");
-
-        const promo = normalizePromo(promoInput.value);
-        const discount = getDiscountByPromo(promo);
-        const finalPrice = calcDiscountedPrice(basePrice, discount);
-
-        if (discount > 0) {
-          priceOld.textContent = basePrice + "₽";
-          priceNew.textContent = finalPrice + "₽";
-          discountBadge.textContent = "Скидка " + discount + "%";
-        } else {
-          priceOld.textContent = "";
-          priceNew.textContent = basePrice + "₽";
-          discountBadge.textContent = promo ? "Промокод не найден" : "Без скидки";
-        }
-      }
-
-      function buildBuyText(card) {
-        const productName = card.dataset.name;
-        const basePrice = Number(card.dataset.price);
-        const nick = (card.querySelector(".user-nick").value || "").trim() || "не указан";
-        const promo = normalizePromo(card.querySelector(".promo-input").value);
-        const discount = getDiscountByPromo(promo);
-        const finalPrice = calcDiscountedPrice(basePrice, discount);
-
-        let text = "Привет, хочу купить товар " + productName + ".\n";
-        text += "Ник: " + nick + ".\n";
-        text += "Цена: " + basePrice + "₽.\n";
-
-        if (discount > 0) {
-          text += "Промокод: " + promo + ".\n";
-          text += "Скидка: " + discount + "%.\n";
-        } else {
-          text += "Промокод: " + (promo || "нет") + ".\n";
-        }
-
-        text += "К оплате: " + finalPrice + "₽.";
-        return text;
-      }
-
-      function buyProduct(button) {
-        const card = button.closest(".product-card");
-        const text = buildBuyText(card);
-        const url = "https://t.me/" + TELEGRAM_USER + "?text=" + encodeURIComponent(text);
-        window.location.href = url;
-      }
-
-      function copyBuyText(button) {
-        const card = button.closest(".product-card");
-        const text = buildBuyText(card);
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text)
-            .then(() => alert("Текст скопирован"))
-            .catch(() => fallbackCopy(text));
-        } else {
-          fallbackCopy(text);
-        }
-      }
-
-      function fallbackCopy(text) {
-        const area = document.createElement("textarea");
-        area.value = text;
-        document.body.appendChild(area);
-        area.select();
-        try {
-          document.execCommand("copy");
-          alert("Текст скопирован");
-        } catch (e) {
-          alert("Не удалось скопировать текст");
-        }
-        document.body.removeChild(area);
-      }
-
-      function sendBonusRequest() {
-        const nick = (document.getElementById("bonusNick").value || "").trim() || "не указан";
-        const text = "я подписался на канал, мой ник " + nick + ", проверьте подписку";
-        window.location.href = "https://t.me/" + TELEGRAM_USER + "?text=" + encodeURIComponent(text);
-      }
-
-      function sendComplaint() {
-        const myNick = (document.getElementById("complaintMyNick").value || "").trim() || "не указан";
-        const targetNick = (document.getElementById("complaintTargetNick").value || "").trim() || "не указан";
-        const complaintText = (document.getElementById("complaintText").value || "").trim() || "без описания";
-
-        const text =
-          "Здравствуйте, хочу подать жалобу.\n" +
-          "Мой ник: " + myNick + "\n" +
-          "Ник нарушителя: " + targetNick + "\n" +
-          "Описание: " + complaintText;
-
-        window.location.href = "https://t.me/" + TELEGRAM_USER + "?text=" + encodeURIComponent(text);
-      }
-
-      function clearComplaint() {
-        document.getElementById("complaintMyNick").value = "";
-        document.getElementById("complaintTargetNick").value = "";
-        document.getElementById("complaintText").value = "";
-      }
-
-      document.querySelectorAll(".nav-btn").forEach(button => {
-        button.addEventListener("click", function () {
-          const panelId = this.dataset.panel;
-          showPanel(panelId);
-        });
-      });
-
-      document.querySelectorAll(".back-home").forEach(button => {
-        button.addEventListener("click", function () {
-          showPanel("homePanel");
-        });
-      });
-
-      const channelBtn = document.getElementById("channelBtn");
-      if (channelBtn) {
-        channelBtn.addEventListener("click", openTelegramChannel);
-      }
-
-      const bonusChannelBtn = document.getElementById("bonusChannelBtn");
-      if (bonusChannelBtn) {
-        bonusChannelBtn.addEventListener("click", openTelegramChannel);
-      }
-
-      const bonusSendBtn = document.getElementById("bonusSendBtn");
-      if (bonusSendBtn) {
-        bonusSendBtn.addEventListener("click", sendBonusRequest);
-      }
-
-      const complaintSendBtn = document.getElementById("complaintSendBtn");
-      if (complaintSendBtn) {
-        complaintSendBtn.addEventListener("click", sendComplaint);
-      }
-
-      const complaintClearBtn = document.getElementById("complaintClearBtn");
-      if (complaintClearBtn) {
-        complaintClearBtn.addEventListener("click", clearComplaint);
-      }
-
-      const bonusInfoBtn = document.getElementById("bonusInfoBtn");
-      if (bonusInfoBtn) {
-        bonusInfoBtn.addEventListener("click", function () {
-          alert("Потом подключим реальную механику.");
-        });
-      }
-
-      document.querySelectorAll(".promo-chip").forEach(button => {
-        button.addEventListener("click", function () {
-          const card = this.closest(".product-card");
-          const input = card.querySelector(".promo-input");
-          input.value = this.dataset.promo || "";
-          updateCardPrice(card);
-        });
-      });
-
-      document.querySelectorAll(".promo-input").forEach(input => {
-        input.addEventListener("input", function () {
-          const card = this.closest(".product-card");
-          updateCardPrice(card);
-        });
-      });
-
-      document.querySelectorAll(".buy-btn").forEach(button => {
-        button.addEventListener("click", function () {
-          buyProduct(this);
-        });
-      });
-
-      document.querySelectorAll(".copy-btn").forEach(button => {
-        button.addEventListener("click", function () {
-          copyBuyText(this);
-        });
-      });
-
-      document.querySelectorAll(".product-card").forEach(card => {
-        updateCardPrice(card);
-      });
-    })();
-  </script>
+
+<div class="container">
+
+<!-- ЛОГО (вставь свой файл сюда) -->
+<img src="file_00000000ce5c71fa8765a146c72c7f22.png" class="logo">
+
+<!-- ГЛАВНАЯ -->
+<div id="home" class="page active">
+
+<div class="banner">
+🔥 По промокоду STAFF скидка 10% 🔥
+</div>
+
+<div class="buttons">
+<button class="btn" onclick="openPage('shop')">Ассортимент</button>
+<button class="btn" onclick="openPage('branches')">Филиалы</button>
+<button class="btn" onclick="openPage('sales')">Акции</button>
+</div>
+
+<button class="bottom-btn" onclick="openTG()">Информация</button>
+
+</div>
+
+<!-- АССОРТИМЕНТ -->
+<div id="shop" class="page">
+
+<h3>Ассортимент</h3>
+
+<div class="card">
+<b>Футболка Oversize</b>
+<div class="price">
+100г — 500₽<br>
+200г — 900₽<br>
+500г — 2000₽<br>
+1кг — 3500₽
+</div>
+
+<input placeholder="Введите промокод">
+<button class="order-btn">Заказать</button>
+</div>
+
+<div class="card">
+<b>Худи Street</b>
+<div class="price">
+100г — 800₽<br>
+200г — 1500₽<br>
+500г — 3500₽<br>
+1кг — 6000₽
+</div>
+
+<input placeholder="Введите промокод">
+<button class="order-btn">Заказать</button>
+</div>
+
+<div class="card">
+<b>Джинсы Classic</b>
+<div class="price">
+100г — 700₽<br>
+200г — 1300₽<br>
+500г — 3000₽<br>
+1кг — 5200₽
+</div>
+
+<input placeholder="Введите промокод">
+<button class="order-btn">Заказать</button>
+</div>
+
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
+
+</div>
+
+<!-- ФИЛИАЛЫ -->
+<div id="branches" class="page">
+
+<h3>Наши филиалы</h3>
+
+<div class="card">
+📍 Рудный:<br>
+Парковая 52<br>
+Ленина 52
+</div>
+
+<div class="card">
+📍 Костанай:<br>
+Ленина 152<br>
+Абая 152
+</div>
+
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
+
+</div>
+
+<!-- АКЦИИ -->
+<div id="sales" class="page">
+
+<h3>Акции</h3>
+
+<div class="card">
+🔥 -10% по промокоду STAFF  
+</div>
+
+<div class="card">
+🔥 При покупке от 1кг — скидка 20%  
+</div>
+
+<div class="card">
+🔥 Каждую пятницу — +200г бесплатно  
+</div>
+
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
+
+</div>
+
+</div>
+
+<script>
+function openPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function openTG() {
+    window.open("https://t.me/yourchannel", "_blank");
+}
+</script>
+
 </body>
-</html>
+  </html>
