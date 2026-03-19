@@ -11,24 +11,24 @@
 body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
-    background: radial-gradient(circle at top, #0a0a14, #050508);
+    background: radial-gradient(circle at 20% 20%, #111122, #050508);
     color: white;
     overflow-x: hidden;
 }
 
-/* PAGE SYSTEM */
+/* PAGES */
 .page {
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
-    transition: 0.6s;
+    transition: 0.5s;
 }
 
 .hidden {
     opacity: 0;
+    transform: scale(1.05);
     pointer-events: none;
-    transform: scale(1.1);
 }
 
 /* HERO */
@@ -47,13 +47,13 @@ body {
     color: transparent;
 }
 
+/* BUTTON */
 .btn {
     padding: 15px 40px;
     border-radius: 12px;
     background: linear-gradient(45deg, #7b2cff, #00f0ff);
     color: white;
     text-decoration: none;
-    font-weight: bold;
     display: inline-block;
     margin-top: 20px;
     transition: 0.3s;
@@ -61,7 +61,7 @@ body {
 
 .btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 30px #7b2cff;
+    box-shadow: 0 0 25px #7b2cff;
 }
 
 /* SECTION */
@@ -78,45 +78,55 @@ body {
     flex-wrap: wrap;
 }
 
-.card, .product {
+/* GLASS */
+.card, .product, .category-card {
     backdrop-filter: blur(15px);
     background: rgba(255,255,255,0.05);
     border-radius: 20px;
     padding: 30px;
     width: 250px;
     transition: 0.4s;
+    cursor: pointer;
 }
 
-.card:hover, .product:hover {
+.card:hover, .product:hover, .category-card:hover {
     transform: translateY(-10px) scale(1.05);
     box-shadow: 0 0 30px rgba(123,44,255,0.5);
 }
 
-/* SHOP HEADER */
-.shop-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-}
-
 /* CATEGORY */
-.category {
-    margin-bottom: 40px;
-}
-
-.price {
-    color: #00f0ff;
+.category-card {
     font-size: 20px;
 }
 
-/* BACK BTN */
+/* PRODUCTS ANIMATION */
+.product {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.product.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* BACK */
 .back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
     cursor: pointer;
     opacity: 0.7;
 }
 
 .back:hover {
     opacity: 1;
+}
+
+/* PRICE */
+.price {
+    color: #00f0ff;
+    margin: 10px 0;
 }
 </style>
 </head>
@@ -128,85 +138,106 @@ body {
     <div class="hero">
         <div>
             <h1>TileRush</h1>
-            <p>Донат без гринда. Быстрый старт.</p>
-            <a class="btn" onclick="openShop()">Открыть магазин</a>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Почему мы</h2>
-        <div class="cards">
-            <div class="card">⚡ Быстрый старт<br><br>50.000.000 при входе</div>
-            <div class="card">💸 Высокий доход<br><br>Баланс экономики</div>
-            <div class="card">🎭 RP уровень<br><br>Строгие правила</div>
+            <p>Быстрый старт. Донат без гринда.</p>
+            <div class="btn" onclick="openCategories()">Открыть магазин</div>
         </div>
     </div>
 </div>
 
-<!-- МАГАЗИН -->
-<div id="shop" class="page hidden">
-
-    <div class="shop-header">
-        <div class="back" onclick="closeShop()">← Назад</div>
-        <div>TileRush Shop</div>
-    </div>
+<!-- КАТЕГОРИИ -->
+<div id="categories" class="page hidden">
+    <div class="back" onclick="goHome()">← Назад</div>
 
     <div class="section">
-
-        <!-- КАТЕГОРИЯ 1 -->
-        <div class="category">
-            <h2>Привилегии</h2>
-            <div class="cards">
-                <div class="product">
-                    <h3>VIP</h3>
-                    <div class="price">199₽</div>
-                    <a class="btn">Купить</a>
-                </div>
-
-                <div class="product">
-                    <h3>PREMIUM</h3>
-                    <div class="price">499₽</div>
-                    <a class="btn">Купить</a>
-                </div>
-
-                <div class="product">
-                    <h3>DELUXE</h3>
-                    <div class="price">999₽</div>
-                    <a class="btn">Купить</a>
-                </div>
-            </div>
+        <h2>Категории</h2>
+        <div class="cards">
+            <div class="category-card" onclick="openCategory('priv')">Привилегии</div>
+            <div class="category-card" onclick="openCategory('items')">Прочее</div>
+            <div class="category-card" onclick="openCategory('bonus')">Бонусы</div>
         </div>
+    </div>
+</div>
 
-        <!-- КАТЕГОРИЯ 2 -->
-        <div class="category">
-            <h2>Дополнительно</h2>
-            <div class="cards">
-                <div class="product">
-                    <h3>Деньги</h3>
-                    <div class="price">149₽</div>
-                    <a class="btn">Купить</a>
-                </div>
+<!-- ТОВАРЫ -->
+<div id="products" class="page hidden">
+    <div class="back" onclick="goCategories()">← Назад</div>
 
-                <div class="product">
-                    <h3>Кейс</h3>
-                    <div class="price">99₽</div>
-                    <a class="btn">Купить</a>
-                </div>
-            </div>
-        </div>
-
+    <div class="section">
+        <h2 id="categoryTitle">Категория</h2>
+        <div class="cards" id="productList"></div>
     </div>
 </div>
 
 <script>
-function openShop() {
-    document.getElementById('home').classList.add('hidden');
-    document.getElementById('shop').classList.remove('hidden');
+function openCategories() {
+    hideAll();
+    document.getElementById('categories').classList.remove('hidden');
 }
 
-function closeShop() {
-    document.getElementById('shop').classList.add('hidden');
+function goHome() {
+    hideAll();
     document.getElementById('home').classList.remove('hidden');
+}
+
+function goCategories() {
+    hideAll();
+    document.getElementById('categories').classList.remove('hidden');
+}
+
+function openCategory(type) {
+    hideAll();
+    document.getElementById('products').classList.remove('hidden');
+
+    const list = document.getElementById('productList');
+    const title = document.getElementById('categoryTitle');
+
+    list.innerHTML = '';
+
+    let items = [];
+
+    if(type === 'priv'){
+        title.innerText = 'Привилегии';
+        items = [
+            {name:'VIP', price:'199₽'},
+            {name:'PREMIUM', price:'499₽'},
+            {name:'DELUXE', price:'999₽'}
+        ];
+    }
+
+    if(type === 'items'){
+        title.innerText = 'Прочее';
+        items = [
+            {name:'Деньги', price:'149₽'},
+            {name:'Кейс', price:'99₽'}
+        ];
+    }
+
+    if(type === 'bonus'){
+        title.innerText = 'Бонусы';
+        items = [
+            {name:'x2 Деньги', price:'199₽'},
+            {name:'Ускорение', price:'129₽'}
+        ];
+    }
+
+    items.forEach((item, i) => {
+        const el = document.createElement('div');
+        el.className = 'product';
+        el.innerHTML = `
+            <h3>${item.name}</h3>
+            <div class="price">${item.price}</div>
+            <div class="btn">Купить</div>
+        `;
+        list.appendChild(el);
+
+        setTimeout(() => {
+            el.classList.add('show');
+        }, i * 120);
+    });
+}
+
+function hideAll(){
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
 }
 </script>
 
