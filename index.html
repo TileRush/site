@@ -11,18 +11,29 @@
 body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
-    background: radial-gradient(circle at top, #0f0f1a, #050508);
+    background: radial-gradient(circle at top, #0a0a14, #050508);
     color: white;
     overflow-x: hidden;
+}
+
+/* PAGE SYSTEM */
+.page {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transition: 0.6s;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.1);
 }
 
 /* HERO */
 .hero {
     height: 100vh;
-    background: linear-gradient(180deg, rgba(5,5,8,0.6), rgba(5,5,8,1)),
-                url('https://images.unsplash.com/photo-1614728263952-84ea256f9679');
-    background-size: cover;
-    background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,27 +47,21 @@ body {
     color: transparent;
 }
 
-.hero p {
-    opacity: 0.8;
-    font-size: 20px;
-}
-
-/* BUTTON */
 .btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 14px 40px;
+    padding: 15px 40px;
     border-radius: 12px;
     background: linear-gradient(45deg, #7b2cff, #00f0ff);
-    text-decoration: none;
     color: white;
+    text-decoration: none;
     font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
     transition: 0.3s;
 }
 
 .btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 25px #7b2cff;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #7b2cff;
 }
 
 /* SECTION */
@@ -68,108 +73,141 @@ body {
 /* CARDS */
 .cards {
     display: flex;
-    justify-content: center;
     gap: 25px;
+    justify-content: center;
     flex-wrap: wrap;
 }
 
-/* GLASS CARD */
 .card, .product {
     backdrop-filter: blur(15px);
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 30px;
     border-radius: 20px;
-    width: 260px;
+    padding: 30px;
+    width: 250px;
     transition: 0.4s;
-    opacity: 0;
-    transform: translateY(40px);
-}
-
-.card.show, .product.show {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .card:hover, .product:hover {
-    transform: translateY(-10px) scale(1.03);
+    transform: translateY(-10px) scale(1.05);
     box-shadow: 0 0 30px rgba(123,44,255,0.5);
 }
 
-/* PRICE */
+/* SHOP HEADER */
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* CATEGORY */
+.category {
+    margin-bottom: 40px;
+}
+
 .price {
-    font-size: 22px;
-    margin: 10px 0;
     color: #00f0ff;
+    font-size: 20px;
 }
 
-/* FOOTER */
-.footer {
-    padding: 40px;
-    text-align: center;
-    opacity: 0.5;
+/* BACK BTN */
+.back {
+    cursor: pointer;
+    opacity: 0.7;
 }
 
-/* SCROLL ANIMATION */
+.back:hover {
+    opacity: 1;
+}
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-    <div>
-        <h1>TileRush</h1>
-        <p>Донат без гринда. Быстрый старт. Жёсткий RP.</p>
-        <a href="#shop" class="btn">Купить донат</a>
-    </div>
-</div>
-
-<div class="section">
-    <h2>Почему выбирают нас</h2>
-    <div class="cards">
-        <div class="card">⚡ Быстрый старт<br><br>50.000.000 при входе</div>
-        <div class="card">💸 Баланс<br><br>Высокие зарплаты</div>
-        <div class="card">🎭 RP уровень<br><br>Строгие правила</div>
-    </div>
-</div>
-
-<div class="section" id="shop">
-    <h2>Донат привилегии</h2>
-    <div class="cards">
-        <div class="product">
-            <h3>VIP</h3>
-            <div class="price">199₽</div>
-            <a href="#" class="btn">Купить</a>
+<!-- ГЛАВНАЯ -->
+<div id="home" class="page">
+    <div class="hero">
+        <div>
+            <h1>TileRush</h1>
+            <p>Донат без гринда. Быстрый старт.</p>
+            <a class="btn" onclick="openShop()">Открыть магазин</a>
         </div>
-        <div class="product">
-            <h3>PREMIUM</h3>
-            <div class="price">499₽</div>
-            <a href="#" class="btn">Купить</a>
-        </div>
-        <div class="product">
-            <h3>DELUXE</h3>
-            <div class="price">999₽</div>
-            <a href="#" class="btn">Купить</a>
+    </div>
+
+    <div class="section">
+        <h2>Почему мы</h2>
+        <div class="cards">
+            <div class="card">⚡ Быстрый старт<br><br>50.000.000 при входе</div>
+            <div class="card">💸 Высокий доход<br><br>Баланс экономики</div>
+            <div class="card">🎭 RP уровень<br><br>Строгие правила</div>
         </div>
     </div>
 </div>
 
-<div class="footer">
-    © 2026 TileRush
+<!-- МАГАЗИН -->
+<div id="shop" class="page hidden">
+
+    <div class="shop-header">
+        <div class="back" onclick="closeShop()">← Назад</div>
+        <div>TileRush Shop</div>
+    </div>
+
+    <div class="section">
+
+        <!-- КАТЕГОРИЯ 1 -->
+        <div class="category">
+            <h2>Привилегии</h2>
+            <div class="cards">
+                <div class="product">
+                    <h3>VIP</h3>
+                    <div class="price">199₽</div>
+                    <a class="btn">Купить</a>
+                </div>
+
+                <div class="product">
+                    <h3>PREMIUM</h3>
+                    <div class="price">499₽</div>
+                    <a class="btn">Купить</a>
+                </div>
+
+                <div class="product">
+                    <h3>DELUXE</h3>
+                    <div class="price">999₽</div>
+                    <a class="btn">Купить</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- КАТЕГОРИЯ 2 -->
+        <div class="category">
+            <h2>Дополнительно</h2>
+            <div class="cards">
+                <div class="product">
+                    <h3>Деньги</h3>
+                    <div class="price">149₽</div>
+                    <a class="btn">Купить</a>
+                </div>
+
+                <div class="product">
+                    <h3>Кейс</h3>
+                    <div class="price">99₽</div>
+                    <a class="btn">Купить</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script>
-const elements = document.querySelectorAll('.card, .product');
+function openShop() {
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('shop').classList.remove('hidden');
+}
 
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting){
-            entry.target.classList.add('show');
-        }
-    });
-});
-
-elements.forEach(el => observer.observe(el));
+function closeShop() {
+    document.getElementById('shop').classList.add('hidden');
+    document.getElementById('home').classList.remove('hidden');
+}
 </script>
 
 </body>
