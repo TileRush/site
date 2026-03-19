@@ -10,78 +10,111 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, Arial;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
     color: white;
-    background: radial-gradient(circle at top, #ff004c, #6a00ff);
-    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ГЛУБОКИЙ ГРАДИЕНТ */
+body::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 20%, #ff003c, transparent),
+                radial-gradient(circle at 80% 30%, #7a00ff, transparent),
+                #0a0a0a;
+    animation: moveBg 12s linear infinite;
+    z-index: -1;
+}
+
+@keyframes moveBg {
+    0% {transform: translate(0,0);}
+    50% {transform: translate(-5%, -5%);}
+    100% {transform: translate(0,0);}
 }
 
 /* КОНТЕЙНЕР */
 .container {
+    max-width: 420px;
+    margin: auto;
     padding: 15px;
-}
-
-/* ХЕДЕР */
-.header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
 /* ЗАГОЛОВОК */
 .title {
-    font-size: 32px;
-    font-weight: 800;
+    font-size: 34px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
 }
 
-.title .red {
-    color: #ff2b2b;
+.red {color: #ff2b2b;}
+
+.title span {
+    text-shadow: 0 0 15px rgba(255,0,0,0.7);
 }
 
 /* БАННЕР */
 .banner {
-    background: rgba(0,0,0,0.4);
-    padding: 12px;
-    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    padding: 14px;
+    border-radius: 16px;
+    margin-bottom: 12px;
     font-size: 14px;
 }
 
 /* КНОПКИ */
-.quick {
+.buttons {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
 }
 
-.quick button {
+.btn {
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: none;
-    font-weight: bold;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
     color: white;
+    font-weight: bold;
+    transition: 0.2s;
 }
 
-/* СЕКЦИЯ */
-.section {
-    margin-top: 15px;
+.btn:active {
+    transform: scale(0.95);
+    background: #ff2b2b;
 }
 
-/* СЕТКА ТОВАРОВ */
+/* СТРАНИЦЫ */
+.page {display:none;}
+.active {display:block;}
+
+/* СЕТКА */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    margin-top: 10px;
 }
 
 /* КАРТОЧКА */
 .card {
-    background: rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
     padding: 12px;
-    border-radius: 14px;
+    border-radius: 16px;
+    transition: 0.2s;
+}
+
+.card:active {
+    transform: scale(0.95);
 }
 
 .card b {
@@ -90,40 +123,70 @@ body {
 
 .price {
     font-size: 12px;
-    color: #ccc;
+    color: #aaa;
     margin-top: 5px;
 }
 
-/* КНОПКА */
-.buy {
-    margin-top: 8px;
+/* НИЖНЯЯ КНОПКА */
+.bottom-btn {
+    margin-top: 12px;
     width: 100%;
-    padding: 8px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 14px;
     border: none;
-    background: linear-gradient(45deg, #ff2b2b, #ff0066);
+    background: #111;
     color: white;
-    font-size: 13px;
 }
 
-/* НИЖНЯЯ ПАНЕЛЬ */
-.footer {
+/* МОДАЛКА */
+.modal {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #000;
-    padding: 10px;
-    text-align: center;
+    background: rgba(20,20,20,0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px 25px 0 0;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: 0.4s ease;
 }
 
-.footer button {
+.modal.active {
+    transform: translateY(0);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ПОЛЕ */
+input {
     width: 100%;
     padding: 12px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px 0;
+}
+
+.order-btn {
+    width: 100%;
+    padding: 14px;
     border-radius: 12px;
     border: none;
-    background: #111;
+    background: linear-gradient(45deg, #ff2b2b, #ff0066);
     color: white;
+    font-weight: bold;
 }
 </style>
 </head>
@@ -132,66 +195,110 @@ body {
 
 <div class="container">
 
-<div class="header">
-
 <div class="title">
 <span class="red">С</span>Т<span class="red">А</span>ФФ
 </div>
 
+<div id="home" class="page active">
+
 <div class="banner">
-🔥 STAFF — скидка 10% по промокоду
+🔥 STAFF — скидка 10%
 </div>
 
-<div class="quick">
-<button>Ассортимент</button>
-<button>Филиалы</button>
-<button>Акции</button>
+<div class="buttons">
+<button class="btn" onclick="openPage('shop')">Каталог</button>
+<button class="btn" onclick="openPage('branches')">Филиалы</button>
+<button class="btn" onclick="openPage('sales')">Акции</button>
 </div>
-
-</div>
-
-<!-- ТОВАРЫ СРАЗУ -->
-<div class="section">
-
-<h3>🔥 Популярное</h3>
 
 <div class="grid">
-
-<div class="card">
+<div class="card" onclick="openProduct('Футболка Oversize')">
 <b>Футболка</b>
-<div class="price">100г — 500₽</div>
-<button class="buy">Смотреть</button>
+<div class="price">от 500₽</div>
 </div>
 
-<div class="card">
+<div class="card" onclick="openProduct('Худи Street')">
 <b>Худи</b>
-<div class="price">100г — 800₽</div>
-<button class="buy">Смотреть</button>
+<div class="price">от 800₽</div>
 </div>
 
-<div class="card">
+<div class="card" onclick="openProduct('Джинсы Classic')">
 <b>Джинсы</b>
-<div class="price">100г — 700₽</div>
-<button class="buy">Смотреть</button>
+<div class="price">от 700₽</div>
 </div>
 
-<div class="card">
+<div class="card" onclick="openProduct('Куртка Urban')">
 <b>Куртка</b>
-<div class="price">100г — 1200₽</div>
-<button class="buy">Смотреть</button>
+<div class="price">от 1200₽</div>
+</div>
+</div>
+
+<button class="bottom-btn" onclick="openTG()">Информация</button>
+
+</div>
+
+<div id="shop" class="page">
+<h2>Каталог</h2>
+<div class="grid">
+<div class="card" onclick="openProduct('Футболка Oversize')">Футболка</div>
+<div class="card" onclick="openProduct('Худи Street')">Худи</div>
+<div class="card" onclick="openProduct('Джинсы Classic')">Джинсы</div>
+<div class="card" onclick="openProduct('Куртка Urban')">Куртка</div>
+</div>
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
+</div>
+
+<div id="branches" class="page">
+<div class="card">Рудный: Парковая 52, Ленина 52</div>
+<div class="card">Костанай: Ленина 152, Абая 152</div>
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
+</div>
+
+<div id="sales" class="page">
+<div class="card">-10% STAFF</div>
+<div class="card">-20% от 1кг</div>
+<button class="bottom-btn" onclick="openPage('home')">Назад</button>
 </div>
 
 </div>
 
+<div class="overlay" onclick="closeModal()"></div>
+
+<div class="modal" id="modal">
+<h2 id="productName"></h2>
+
+<div>
+100г — 500₽<br>
+200г — 900₽<br>
+500г — 2000₽<br>
+1кг — 3500₽
 </div>
 
+<input placeholder="Промокод">
+<button class="order-btn">Заказать</button>
 </div>
 
-<div class="footer">
-<button onclick="window.open('https://t.me/yourchannel')">
-Информация
-</button>
-</div>
+<script>
+function openPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function openProduct(name) {
+    document.getElementById("productName").innerText = name;
+    document.getElementById("modal").classList.add("active");
+    document.querySelector(".overlay").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.remove("active");
+    document.querySelector(".overlay").classList.remove("active");
+}
+
+function openTG() {
+    window.open("https://t.me/yourchannel");
+}
+</script>
 
 </body>
 </html>
