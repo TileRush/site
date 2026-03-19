@@ -8,8 +8,6 @@
 <style>
 /* Базовые стили */
 html, body {margin:0; padding:0; font-family:'Montserrat',sans-serif; background:#121212; color:white; overflow-x:hidden;}
-
-/* PAGES */
 .page {position:absolute; width:100%; top:0; left:0; transition:0.5s;}
 .hidden {opacity:0; pointer-events:none; transform:scale(1.02);}
 
@@ -23,37 +21,17 @@ html, body {margin:0; padding:0; font-family:'Montserrat',sans-serif; background
 
 /* CARDS */
 .cards {display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:40px;}
-.card, .product, .category {
-  background: rgba(255,255,255,0.05); 
-  backdrop-filter: blur(10px);
-  padding:25px;
-  border-radius:20px;
-  width:220px;
-  text-align:center;
-  cursor:pointer;
-  transition:0.3s;
-}
-.card:hover, .product:hover, .category:hover {transform:translateY(-5px) scale(1.03); box-shadow:0 0 25px rgba(123,44,255,0.4);}
-.price {margin:10px 0; color:#00f0ff; font-weight:600;}
-.section {padding:80px 20px; text-align:center;}
+.category {background: rgba(255,255,255,0.05); backdrop-filter:blur(10px); padding:25px; border-radius:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;}
+.category:hover {transform:translateY(-5px) scale(1.03); box-shadow:0 0 25px rgba(123,44,255,0.4);}
 .back {position:fixed; top:20px; left:20px; cursor:pointer; font-weight:bold; color:white;}
 
-/* MODAL */
-.modal {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8); 
-        background: rgba(20,20,30,0.95); padding:30px; border-radius:20px; display:none; 
-        color:white; text-align:center; width:340px; max-width:90%; box-shadow:0 0 40px rgba(123,44,255,0.5);
-        transition:0.3s;}
-.modal.show {display:block; animation:modalIn 0.3s forwards;}
-@keyframes modalIn {0%{opacity:0; transform:translate(-50%,-50%) scale(0.8);} 100%{opacity:1; transform:translate(-50%,-50%) scale(1);}}
-
-.modal h2 {margin-bottom:20px;}
-.modal .modal-price {font-size:22px; margin:10px 0; color:#00f0ff; font-weight:600;}
-.modal input {width:100%; padding:12px; margin:8px 0; border-radius:10px; border:none; outline:none; font-size:16px; background: rgba(255,255,255,0.05); color:white;}
-.modal input::placeholder {color: rgba(255,255,255,0.5);}
-.modal .apply-btn {width:100%; padding:10px; margin-top:8px; border-radius:10px; border:none; background:#00f0ff; color:black; font-weight:600; cursor:pointer; transition:0.3s;}
-.modal .apply-btn:hover {transform:scale(1.03);}
-.modal .close-btn {margin-top:15px; padding:10px 20px; border-radius:10px; border:none; background:#7b2cff; color:white; cursor:pointer; transition:0.3s;}
-.modal .close-btn:hover {transform:scale(1.05);}
+/* КРУТАЯ КАРТОЧКА ТОВАРА */
+.product-card {background: rgba(20,20,30,0.95); border-radius:20px; padding:20px; width:300px; max-width:90%; margin:20px auto; text-align:center; box-shadow:0 0 30px rgba(123,44,255,0.5); transition:0.3s;}
+.product-card:hover {transform:translateY(-5px) scale(1.02);}
+.product-card h3 {font-size:24px; margin-bottom:10px;}
+.product-card .price {color:#00f0ff; font-weight:600; margin-bottom:15px;}
+.product-card .buy-btn {padding:12px 24px; background:linear-gradient(90deg,#7b2cff,#00f0ff); border:none; border-radius:12px; color:white; font-weight:600; cursor:pointer; transition:0.3s;}
+.product-card .buy-btn:hover {transform:scale(1.05);}
 </style>
 </head>
 <body>
@@ -70,38 +48,20 @@ html, body {margin:0; padding:0; font-family:'Montserrat',sans-serif; background
 <!-- CATEGORIES -->
 <div id="categories" class="page hidden">
     <div class="back" onclick="showPage('home')">← Назад</div>
-    <div class="section">
-        <h2>Категории</h2>
-        <div class="cards">
-            <div class="category" onclick="openCategory('priv')">Привилегии</div>
-            <div class="category" onclick="openCategory('items')">Прочее</div>
-            <div class="category" onclick="openCategory('bonus')">Бонусы</div>
-        </div>
+    <div class="cards">
+        <div class="category" onclick="openCategory('priv')">Привилегии</div>
+        <div class="category" onclick="openCategory('items')">Прочее</div>
+        <div class="category" onclick="openCategory('bonus')">Бонусы</div>
     </div>
 </div>
 
 <!-- PRODUCTS -->
 <div id="products" class="page hidden">
     <div class="back" onclick="showPage('categories')">← Назад</div>
-    <div class="section">
-        <h2 id="title">Категория</h2>
-        <div class="cards" id="list"></div>
-    </div>
-</div>
-
-<!-- MODAL PURCHASE -->
-<div id="modal" class="modal">
-    <h2 id="modalTitle">Товар</h2>
-    <div class="modal-price" id="modalPrice">0₽</div>
-    <input type="text" id="nickname" placeholder="Введите ваш ник">
-    <input type="text" id="promo" placeholder="Промокод">
-    <button class="apply-btn" onclick="applyPromo()">Применить промокод</button>
-    <button class="close-btn" onclick="closeModal()">Закрыть</button>
+    <div id="productList"></div>
 </div>
 
 <script>
-let currentPrice = 0;
-
 function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
@@ -109,43 +69,27 @@ function showPage(id){
 
 function openCategory(type){
     showPage('products');
-    const list=document.getElementById('list');
-    const title=document.getElementById('title');
+    const list=document.getElementById('productList');
     list.innerHTML='';
     let items=[];
-    if(type==='priv'){title.innerText='Привилегии'; items=[{name:'VIP',price:199},{name:'PREMIUM',price:499},{name:'DELUXE',price:999}];}
-    if(type==='items'){title.innerText='Прочее'; items=[{name:'Деньги',price:149},{name:'Кейс',price:99}];}
-    if(type==='bonus'){title.innerText='Бонусы'; items=[{name:'x2 Деньги',price:199},{name:'Буст',price:129}];}
+    if(type==='priv'){items=[{name:'VIP',price:199},{name:'PREMIUM',price:499},{name:'DELUXE',price:999}];}
+    if(type==='items'){items=[{name:'Деньги',price:149},{name:'Кейс',price:99}];}
+    if(type==='bonus'){items=[{name:'x2 Деньги',price:199},{name:'Буст',price:129}];}
 
-    items.forEach((item,i)=>{
-        const el=document.createElement('div');
-        el.className='product';
-        el.innerHTML=`<h3>${item.name}</h3><div class="price">${item.price}₽</div>
-            <button class="btn" onclick="openModal('${item.name}',${item.price})">Купить</button>`;
-        list.appendChild(el);
-        setTimeout(()=>el.style.opacity=1, i*100);
+    items.forEach(item=>{
+        const card=document.createElement('div');
+        card.className='product-card';
+        card.innerHTML=`<h3>${item.name}</h3>
+                        <div class="price">${item.price}₽</div>
+                        <button class="buy-btn" onclick="buyTelegram('${item.name}',${item.price})">Купить</button>`;
+        list.appendChild(card);
     });
 }
 
-function openModal(name,price){
-    currentPrice = price;
-    document.getElementById('modal').classList.add('show');
-    document.getElementById('modalTitle').innerText = name;
-    document.getElementById('modalPrice').innerText = price+'₽';
-    document.getElementById('nickname').value='';
-    document.getElementById('promo').value='';
-}
-
-function closeModal(){
-    document.getElementById('modal').classList.remove('show');
-}
-
-function applyPromo(){
-    const code = document.getElementById('promo').value.trim().toUpperCase();
-    let newPrice = currentPrice;
-    if(code==='DISCOUNT10'){newPrice = Math.round(currentPrice*0.9);}
-    else if(code==='DISCOUNT50'){newPrice = Math.round(currentPrice*0.5);}
-    document.getElementById('modalPrice').innerText = newPrice+'₽';
+function buyTelegram(name,price){
+    // готовое сообщение в Telegram
+    const text = encodeURIComponent(`Хочу купить "${name}" за ${price}₽ на TileRush`);
+    window.open(`https://t.me/seventeenlanguage?text=${text}`, '_blank');
 }
 </script>
 
