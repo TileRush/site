@@ -4,37 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TileRush</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
 html, body {
     margin: 0;
     padding: 0;
-    background: #050508 !important;
-    color: white;
     font-family: 'Montserrat', sans-serif;
     overflow-x: hidden;
+    height: 100%;
 }
 
-/* ПЕРЕБИВАЕМ ВСЁ */
-* {
-    box-sizing: border-box;
+/* АНИМИРОВАННЫЙ ФОН */
+body {
+    background: linear-gradient(270deg, #ff00ff, #00ffff, #ffcc00, #ff0055);
+    background-size: 800% 800%;
+    animation: GradientBG 20s ease infinite;
+    color: white;
+}
+
+@keyframes GradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
 }
 
 /* PAGES */
-.page {
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
-    transition: 0.4s;
-}
-
-.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
+.page {position:absolute;width:100%;top:0;left:0;transition:0.5s;}
+.hidden {opacity:0;pointer-events:none;transform:scale(1.05);}
 
 /* HERO */
 .hero {
@@ -46,72 +42,70 @@ html, body {
 }
 
 .hero h1 {
-    font-size: 60px;
-    background: linear-gradient(45deg, #7b2cff, #00f0ff);
+    font-size: 70px;
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
     -webkit-background-clip: text;
     color: transparent;
+    animation: GlowText 2s ease-in-out infinite alternate;
 }
 
-/* BUTTON */
+@keyframes GlowText {
+    0% {text-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff;}
+    100% {text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;}
+}
+
 .btn {
     padding: 15px 40px;
     border-radius: 12px;
-    background: linear-gradient(45deg, #7b2cff, #00f0ff);
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
     cursor: pointer;
     display: inline-block;
     margin-top: 20px;
     transition: 0.3s;
+    font-weight: bold;
+    color: black;
 }
 
-.btn:hover {
-    transform: scale(1.1);
-}
-
-/* SECTION */
-.section {
-    padding: 80px 20px;
-    text-align: center;
-}
+.btn:hover {transform: scale(1.1);}
 
 /* CARDS */
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-/* GLASS */
+.cards {display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin-top:40px;}
 .card, .product, .category {
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    border-radius: 15px;
-    width: 220px;
-    cursor: pointer;
-    transition: 0.3s;
+    background: rgba(255,255,255,0.1);
+    padding:25px;
+    border-radius:20px;
+    width:220px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.4s;
+    color:white;
+    box-shadow:0 0 10px rgba(255,255,255,0.3);
 }
 
 .card:hover, .product:hover, .category:hover {
-    transform: translateY(-8px);
-    background: rgba(255,255,255,0.08);
+    transform:translateY(-8px) scale(1.05);
+    box-shadow:0 0 25px rgba(255,255,255,0.7);
 }
 
-/* PRICE */
-.price {
-    color: #00f0ff;
-    margin: 10px 0;
-}
+.price {margin:10px 0;font-weight:bold;color:#ff0;}
 
-/* BACK */
+.section {padding:80px 20px;text-align:center;}
+
 .back {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
+    position:fixed;top:20px;left:20px;cursor:pointer;
+    font-weight:bold;color:white;
 }
+
+.modal {
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    background: rgba(0,0,0,0.9); padding:30px; border-radius:20px;
+    display:none; color:white; text-align:center;
+    z-index:100;
+}
+
+.modal .btn {margin-top:20px;}
 </style>
 </head>
-
 <body>
 
 <!-- HOME -->
@@ -119,7 +113,7 @@ html, body {
     <div class="hero">
         <div>
             <h1>TileRush</h1>
-            <p>Донат без гринда</p>
+            <p>Быстрый старт. Донат без гринда.</p>
             <div class="btn" onclick="showPage('categories')">Открыть магазин</div>
         </div>
     </div>
@@ -128,7 +122,6 @@ html, body {
 <!-- CATEGORIES -->
 <div id="categories" class="page hidden">
     <div class="back" onclick="showPage('home')">← Назад</div>
-
     <div class="section">
         <h2>Категории</h2>
         <div class="cards">
@@ -142,65 +135,48 @@ html, body {
 <!-- PRODUCTS -->
 <div id="products" class="page hidden">
     <div class="back" onclick="showPage('categories')">← Назад</div>
-
     <div class="section">
         <h2 id="title">Категория</h2>
         <div class="cards" id="list"></div>
     </div>
 </div>
 
+<!-- MODAL -->
+<div id="modal" class="modal">
+    <p>Кнопка "Купить" нажата!</p>
+    <div class="btn" onclick="closeModal()">Закрыть</div>
+</div>
+
 <script>
 function showPage(id){
-    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
 }
 
 function openCategory(type){
     showPage('products');
-
-    const list = document.getElementById('list');
-    const title = document.getElementById('title');
-
-    list.innerHTML = '';
-
-    let items = [];
-
-    if(type === 'priv'){
-        title.innerText = 'Привилегии';
-        items = [
-            {name:'VIP', price:'199₽'},
-            {name:'PREMIUM', price:'499₽'},
-            {name:'DELUXE', price:'999₽'}
-        ];
-    }
-
-    if(type === 'items'){
-        title.innerText = 'Прочее';
-        items = [
-            {name:'Деньги', price:'149₽'},
-            {name:'Кейс', price:'99₽'}
-        ];
-    }
-
-    if(type === 'bonus'){
-        title.innerText = 'Бонусы';
-        items = [
-            {name:'x2 Деньги', price:'199₽'},
-            {name:'Буст', price:'129₽'}
-        ];
-    }
-
-    items.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'product';
-        el.innerHTML = `
-            <h3>${item.name}</h3>
-            <div class="price">${item.price}</div>
-            <div class="btn">Купить</div>
-        `;
+    const list=document.getElementById('list');
+    const title=document.getElementById('title');
+    list.innerHTML='';
+    let items=[];
+    if(type==='priv'){title.innerText='Привилегии'; items=[{name:'VIP',price:'199₽'},{name:'PREMIUM',price:'499₽'},{name:'DELUXE',price:'999₽'}];}
+    if(type==='items'){title.innerText='Прочее'; items=[{name:'Деньги',price:'149₽'},{name:'Кейс',price:'99₽'}];}
+    if(type==='bonus'){title.innerText='Бонусы'; items=[{name:'x2 Деньги',price:'199₽'},{name:'Буст',price:'129₽'}];}
+    items.forEach((item,i)=>{
+        const el=document.createElement('div');
+        el.className='product';
+        el.innerHTML=`<h3>${item.name}</h3><div class="price">${item.price}</div><div class="btn" onclick="openModal('${item.name}')">Купить</div>`;
         list.appendChild(el);
+        setTimeout(()=>el.style.opacity=1, i*150);
     });
 }
+
+function openModal(name){
+    document.getElementById('modal').style.display='block';
+    document.getElementById('modal').querySelector('p').innerText='Вы выбрали: '+name;
+}
+
+function closeModal(){document.getElementById('modal').style.display='none';}
 </script>
 
 </body>
