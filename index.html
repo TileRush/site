@@ -3,74 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STAFF</title>
+<title>СТАФФ</title>
 
 <style>
-body {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
-    background: #0f0f0f;
+}
+
+body {
+    height: 100vh;
     color: white;
+    overflow-x: hidden;
 }
 
-/* контейнер */
+/* АНИМИРОВАННЫЙ ФОН */
+body::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, red, #ff0066, #6a00ff, red);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* КОНТЕЙНЕР */
 .container {
-    padding: 15px;
-    max-width: 500px;
+    max-width: 420px;
     margin: auto;
+    padding: 20px;
 }
 
-/* логотип */
-.logo {
-    width: 180px;
-    display: block;
-    margin: 10px auto;
-}
-
-/* баннер */
-.banner {
-    background: linear-gradient(135deg, red, #ff3c3c);
-    padding: 15px;
-    border-radius: 15px;
+/* ЗАГОЛОВОК */
+.title {
     text-align: center;
+    font-size: 40px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    animation: fadeDown 1s ease;
 }
 
-/* кнопки */
+.title span {
+    color: red;
+}
+
+@keyframes fadeDown {
+    from {opacity:0; transform: translateY(-30px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+/* БАННЕР */
+.banner {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+    animation: fadeUp 1s ease;
+}
+
+/* КНОПКИ */
 .buttons {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .btn {
-    flex: 1;
-    padding: 15px;
+    padding: 18px;
+    font-size: 18px;
     border: none;
-    border-radius: 12px;
-    background: #1a1a1a;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.1);
     color: white;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+    animation: fadeUp 1s ease;
 }
 
 .btn:hover {
+    transform: scale(1.05);
     background: red;
 }
 
-/* нижняя кнопка */
+/* НИЖНЯЯ КНОПКА */
 .bottom-btn {
+    margin-top: 20px;
     width: 100%;
-    padding: 12px;
-    background: #222;
-    border-radius: 12px;
+    padding: 15px;
+    border-radius: 20px;
     border: none;
+    font-size: 16px;
+    background: black;
     color: white;
 }
 
-/* страницы */
+/* СТРАНИЦЫ */
 .page {
     display: none;
 }
@@ -79,37 +120,44 @@ body {
     display: block;
 }
 
-/* карточки */
+/* КАРТОЧКИ */
 .card {
-    background: #1a1a1a;
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 10px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    animation: fadeUp 0.5s ease;
 }
 
 .price {
-    color: #aaa;
-    font-size: 13px;
+    color: #ccc;
+    font-size: 14px;
+    margin: 10px 0;
 }
 
-/* поле */
 input {
     width: 100%;
-    padding: 8px;
-    border-radius: 8px;
+    padding: 10px;
+    border-radius: 10px;
     border: none;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .order-btn {
     width: 100%;
-    padding: 10px;
-    background: red;
+    padding: 12px;
+    border-radius: 10px;
     border: none;
-    border-radius: 8px;
+    background: red;
     color: white;
     font-weight: bold;
+}
+
+/* АНИМАЦИЯ */
+@keyframes fadeUp {
+    from {opacity:0; transform: translateY(30px);}
+    to {opacity:1; transform: translateY(0);}
 }
 </style>
 </head>
@@ -118,8 +166,10 @@ input {
 
 <div class="container">
 
-<!-- ЛОГО (вставь свой файл сюда) -->
-<img src="file_00000000ce5c71fa8765a146c72c7f22.png" class="logo">
+<!-- ЗАГОЛОВОК -->
+<div class="title">
+<span>С</span>ТА<span>Ф</span>Ф
+</div>
 
 <!-- ГЛАВНАЯ -->
 <div id="home" class="page active">
@@ -141,44 +191,41 @@ input {
 <!-- АССОРТИМЕНТ -->
 <div id="shop" class="page">
 
-<h3>Ассортимент</h3>
+<h2>Ассортимент</h2>
 
 <div class="card">
-<b>Футболка Oversize</b>
+<b>🔥 Футболка Oversize</b>
 <div class="price">
 100г — 500₽<br>
 200г — 900₽<br>
 500г — 2000₽<br>
 1кг — 3500₽
 </div>
-
-<input placeholder="Введите промокод">
+<input placeholder="Промокод">
 <button class="order-btn">Заказать</button>
 </div>
 
 <div class="card">
-<b>Худи Street</b>
+<b>🔥 Худи Street</b>
 <div class="price">
 100г — 800₽<br>
 200г — 1500₽<br>
 500г — 3500₽<br>
 1кг — 6000₽
 </div>
-
-<input placeholder="Введите промокод">
+<input placeholder="Промокод">
 <button class="order-btn">Заказать</button>
 </div>
 
 <div class="card">
-<b>Джинсы Classic</b>
+<b>🔥 Джинсы Classic</b>
 <div class="price">
 100г — 700₽<br>
 200г — 1300₽<br>
 500г — 3000₽<br>
 1кг — 5200₽
 </div>
-
-<input placeholder="Введите промокод">
+<input placeholder="Промокод">
 <button class="order-btn">Заказать</button>
 </div>
 
@@ -189,16 +236,16 @@ input {
 <!-- ФИЛИАЛЫ -->
 <div id="branches" class="page">
 
-<h3>Наши филиалы</h3>
+<h2>Филиалы</h2>
 
 <div class="card">
-📍 Рудный:<br>
+📍 Рудный<br>
 Парковая 52<br>
 Ленина 52
 </div>
 
 <div class="card">
-📍 Костанай:<br>
+📍 Костанай<br>
 Ленина 152<br>
 Абая 152
 </div>
@@ -210,19 +257,11 @@ input {
 <!-- АКЦИИ -->
 <div id="sales" class="page">
 
-<h3>Акции</h3>
+<h2>Акции</h2>
 
-<div class="card">
-🔥 -10% по промокоду STAFF  
-</div>
-
-<div class="card">
-🔥 При покупке от 1кг — скидка 20%  
-</div>
-
-<div class="card">
-🔥 Каждую пятницу — +200г бесплатно  
-</div>
+<div class="card">🔥 -10% по промокоду STAFF</div>
+<div class="card">🔥 От 1кг скидка 20%</div>
+<div class="card">🔥 Каждую пятницу +200г</div>
 
 <button class="bottom-btn" onclick="openPage('home')">Назад</button>
 
@@ -242,4 +281,4 @@ function openTG() {
 </script>
 
 </body>
-  </html>
+</html>
