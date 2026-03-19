@@ -14,7 +14,6 @@
 }
 
 body {
-    height: 100vh;
     color: white;
     overflow-x: hidden;
 }
@@ -25,16 +24,16 @@ body::before {
     position: fixed;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, red, #ff0066, #6a00ff, red);
+    background: linear-gradient(45deg, #ff0000, #ff0066, #7a00ff, #ff0000);
     background-size: 400% 400%;
-    animation: gradient 10s ease infinite;
+    animation: bg 12s ease infinite;
     z-index: -1;
 }
 
-@keyframes gradient {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
+@keyframes bg {
+    0% {background-position: 0%}
+    50% {background-position: 100%}
+    100% {background-position: 0%}
 }
 
 /* КОНТЕЙНЕР */
@@ -47,117 +46,146 @@ body::before {
 /* ЗАГОЛОВОК */
 .title {
     text-align: center;
-    font-size: 40px;
+    font-size: 42px;
     font-weight: bold;
-    margin-bottom: 20px;
-    animation: fadeDown 1s ease;
+    margin-bottom: 15px;
+    animation: fadeDown 0.8s ease;
 }
 
-.title span {
-    color: red;
-}
-
-@keyframes fadeDown {
-    from {opacity:0; transform: translateY(-30px);}
-    to {opacity:1; transform: translateY(0);}
+.red {
+    color: #ff2b2b;
 }
 
 /* БАННЕР */
 .banner {
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
-    padding: 15px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(15px);
+    padding: 16px;
     border-radius: 20px;
     text-align: center;
-    font-size: 16px;
-    margin-bottom: 20px;
-    animation: fadeUp 1s ease;
+    margin-bottom: 15px;
+    animation: fadeUp 0.8s ease;
 }
 
 /* КНОПКИ */
 .buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
 .btn {
     padding: 18px;
-    font-size: 18px;
-    border: none;
     border-radius: 20px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
     background: rgba(255,255,255,0.1);
     color: white;
-    font-weight: bold;
     backdrop-filter: blur(10px);
     transition: 0.3s;
-    animation: fadeUp 1s ease;
 }
 
-.btn:hover {
-    transform: scale(1.05);
-    background: red;
+.btn:active {
+    transform: scale(0.96);
+    background: #ff2b2b;
 }
 
-/* НИЖНЯЯ КНОПКА */
+/* НИЖНЯЯ */
 .bottom-btn {
-    margin-top: 20px;
+    margin-top: 15px;
     width: 100%;
-    padding: 15px;
-    border-radius: 20px;
+    padding: 14px;
+    border-radius: 18px;
     border: none;
-    font-size: 16px;
     background: black;
     color: white;
 }
 
 /* СТРАНИЦЫ */
-.page {
-    display: none;
+.page {display:none;}
+.active {display:block;}
+
+/* СЕТКА */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
-.active {
-    display: block;
-}
-
-/* КАРТОЧКИ */
+/* КАРТОЧКА */
 .card {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.45);
     backdrop-filter: blur(12px);
     padding: 15px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    animation: fadeUp 0.5s ease;
+    border-radius: 18px;
+    text-align: center;
+    transition: 0.3s;
 }
 
-.price {
-    color: #ccc;
-    font-size: 14px;
-    margin: 10px 0;
+.card:active {
+    transform: scale(0.95);
 }
 
+/* МОДАЛКА */
+.modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #111;
+    border-radius: 25px 25px 0 0;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: 0.4s ease;
+}
+
+.modal.active {
+    transform: translateY(0);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ПОЛЕ */
 input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    margin-bottom: 8px;
-}
-
-.order-btn {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
     border: none;
-    background: red;
+    margin: 10px 0;
+}
+
+.order-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #ff2b2b;
     color: white;
     font-weight: bold;
 }
 
-/* АНИМАЦИЯ */
+/* АНИМАЦИИ */
 @keyframes fadeUp {
-    from {opacity:0; transform: translateY(30px);}
-    to {opacity:1; transform: translateY(0);}
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeDown {
+    from {opacity:0; transform:translateY(-20px);}
+    to {opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
@@ -168,14 +196,14 @@ input {
 
 <!-- ЗАГОЛОВОК -->
 <div class="title">
-<span>С</span>ТА<span>Ф</span>Ф
+<span class="red">С</span>Т<span class="red">А</span>ФФ
 </div>
 
 <!-- ГЛАВНАЯ -->
 <div id="home" class="page active">
 
 <div class="banner">
-🔥 По промокоду STAFF скидка 10% 🔥
+🔥 Промокод STAFF — скидка 10%
 </div>
 
 <div class="buttons">
@@ -193,40 +221,13 @@ input {
 
 <h2>Ассортимент</h2>
 
-<div class="card">
-<b>🔥 Футболка Oversize</b>
-<div class="price">
-100г — 500₽<br>
-200г — 900₽<br>
-500г — 2000₽<br>
-1кг — 3500₽
-</div>
-<input placeholder="Промокод">
-<button class="order-btn">Заказать</button>
-</div>
+<div class="grid">
 
-<div class="card">
-<b>🔥 Худи Street</b>
-<div class="price">
-100г — 800₽<br>
-200г — 1500₽<br>
-500г — 3500₽<br>
-1кг — 6000₽
-</div>
-<input placeholder="Промокод">
-<button class="order-btn">Заказать</button>
-</div>
+<div class="card" onclick="openProduct('Футболка Oversize')">Футболка</div>
+<div class="card" onclick="openProduct('Худи Street')">Худи</div>
+<div class="card" onclick="openProduct('Джинсы Classic')">Джинсы</div>
+<div class="card" onclick="openProduct('Куртка Urban')">Куртка</div>
 
-<div class="card">
-<b>🔥 Джинсы Classic</b>
-<div class="price">
-100г — 700₽<br>
-200г — 1300₽<br>
-500г — 3000₽<br>
-1кг — 5200₽
-</div>
-<input placeholder="Промокод">
-<button class="order-btn">Заказать</button>
 </div>
 
 <button class="bottom-btn" onclick="openPage('home')">Назад</button>
@@ -235,44 +236,64 @@ input {
 
 <!-- ФИЛИАЛЫ -->
 <div id="branches" class="page">
-
 <h2>Филиалы</h2>
 
 <div class="card">
-📍 Рудный<br>
-Парковая 52<br>
-Ленина 52
+📍 Рудный<br>Парковая 52<br>Ленина 52
 </div>
 
 <div class="card">
-📍 Костанай<br>
-Ленина 152<br>
-Абая 152
+📍 Костанай<br>Ленина 152<br>Абая 152
 </div>
 
 <button class="bottom-btn" onclick="openPage('home')">Назад</button>
-
 </div>
 
 <!-- АКЦИИ -->
 <div id="sales" class="page">
-
 <h2>Акции</h2>
 
-<div class="card">🔥 -10% по промокоду STAFF</div>
-<div class="card">🔥 От 1кг скидка 20%</div>
-<div class="card">🔥 Каждую пятницу +200г</div>
+<div class="card">🔥 -10% по STAFF</div>
+<div class="card">🔥 от 1кг скидка 20%</div>
 
 <button class="bottom-btn" onclick="openPage('home')">Назад</button>
+</div>
 
 </div>
 
+<!-- OVERLAY -->
+<div class="overlay" onclick="closeModal()"></div>
+
+<!-- МОДАЛКА -->
+<div class="modal" id="modal">
+<h2 id="productName"></h2>
+
+<div>
+100г — 500₽<br>
+200г — 900₽<br>
+500г — 2000₽<br>
+1кг — 3500₽
+</div>
+
+<input placeholder="Введите промокод">
+<button class="order-btn">Заказать</button>
 </div>
 
 <script>
 function openPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+}
+
+function openProduct(name) {
+    document.getElementById("productName").innerText = name;
+    document.getElementById("modal").classList.add("active");
+    document.querySelector(".overlay").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.remove("active");
+    document.querySelector(".overlay").classList.remove("active");
 }
 
 function openTG() {
