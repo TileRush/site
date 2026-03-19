@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STAFF SERVER</title>
+<title>TileRush</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #0a0a0f;
+    font-family: 'Montserrat', sans-serif;
+    background: radial-gradient(circle at top, #0f0f1a, #050508);
     color: white;
+    overflow-x: hidden;
 }
 
 /* HERO */
 .hero {
     height: 100vh;
-    background: linear-gradient(180deg, rgba(10,10,15,0.6), rgba(10,10,15,1)),
-                url('https://images.unsplash.com/photo-1605902711622-cfb43c44367f');
+    background: linear-gradient(180deg, rgba(5,5,8,0.6), rgba(5,5,8,1)),
+                url('https://images.unsplash.com/photo-1614728263952-84ea256f9679');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -27,68 +30,87 @@ body {
 }
 
 .hero h1 {
-    font-size: 60px;
+    font-size: 70px;
+    background: linear-gradient(45deg, #7b2cff, #00f0ff);
+    -webkit-background-clip: text;
+    color: transparent;
 }
 
 .hero p {
-    font-size: 20px;
     opacity: 0.8;
+    font-size: 20px;
 }
 
+/* BUTTON */
 .btn {
     display: inline-block;
     margin-top: 20px;
-    padding: 15px 35px;
+    padding: 14px 40px;
     border-radius: 12px;
-    background: linear-gradient(45deg, #7b2cff, #00c3ff);
-    color: white;
+    background: linear-gradient(45deg, #7b2cff, #00f0ff);
     text-decoration: none;
+    color: white;
     font-weight: bold;
     transition: 0.3s;
 }
 
 .btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
     box-shadow: 0 0 25px #7b2cff;
 }
 
 /* SECTION */
 .section {
-    padding: 80px 20px;
+    padding: 100px 20px;
     text-align: center;
 }
 
+/* CARDS */
 .cards {
     display: flex;
-    gap: 20px;
     justify-content: center;
+    gap: 25px;
     flex-wrap: wrap;
 }
 
+/* GLASS CARD */
 .card, .product {
-    background: #12121a;
-    padding: 25px;
-    border-radius: 15px;
-    width: 250px;
-    transition: 0.3s;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 30px;
+    border-radius: 20px;
+    width: 260px;
+    transition: 0.4s;
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.card.show, .product.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .card:hover, .product:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 20px rgba(123,44,255,0.4);
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 30px rgba(123,44,255,0.5);
 }
 
+/* PRICE */
 .price {
-    font-size: 20px;
-    color: #00c3ff;
+    font-size: 22px;
     margin: 10px 0;
+    color: #00f0ff;
 }
 
+/* FOOTER */
 .footer {
-    padding: 30px;
+    padding: 40px;
     text-align: center;
     opacity: 0.5;
 }
+
+/* SCROLL ANIMATION */
 </style>
 </head>
 
@@ -96,32 +118,23 @@ body {
 
 <div class="hero">
     <div>
-        <h1>СТАФФ СЕРВЕР</h1>
-        <p>Лучший донат без гринда</p>
+        <h1>TileRush</h1>
+        <p>Донат без гринда. Быстрый старт. Жёсткий RP.</p>
         <a href="#shop" class="btn">Купить донат</a>
     </div>
 </div>
 
 <div class="section">
-    <h2>Почему мы?</h2>
+    <h2>Почему выбирают нас</h2>
     <div class="cards">
-        <div class="card">
-            <h3>⚡ Быстрый старт</h3>
-            <p>50.000.000 при входе</p>
-        </div>
-        <div class="card">
-            <h3>💸 Лёгкий заработок</h3>
-            <p>Высокие зарплаты</p>
-        </div>
-        <div class="card">
-            <h3>🎭 RP уровень</h3>
-            <p>Строгие правила</p>
-        </div>
+        <div class="card">⚡ Быстрый старт<br><br>50.000.000 при входе</div>
+        <div class="card">💸 Баланс<br><br>Высокие зарплаты</div>
+        <div class="card">🎭 RP уровень<br><br>Строгие правила</div>
     </div>
 </div>
 
 <div class="section" id="shop">
-    <h2>Донат</h2>
+    <h2>Донат привилегии</h2>
     <div class="cards">
         <div class="product">
             <h3>VIP</h3>
@@ -142,8 +155,22 @@ body {
 </div>
 
 <div class="footer">
-    © 2026 STAFF SERVER
+    © 2026 TileRush
 </div>
+
+<script>
+const elements = document.querySelectorAll('.card, .product');
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add('show');
+        }
+    });
+});
+
+elements.forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
