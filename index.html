@@ -6,104 +6,35 @@
 <title>TileRush</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
-    height: 100%;
-}
+html, body {margin:0; padding:0; font-family:'Montserrat',sans-serif; height:100%; overflow-x:hidden;}
+body {background: linear-gradient(270deg,#ff00ff,#00ffff,#ffcc00,#ff0055); background-size:800% 800%; animation: GradientBG 20s ease infinite; color:white;}
 
-/* АНИМИРОВАННЫЙ ФОН */
-body {
-    background: linear-gradient(270deg, #ff00ff, #00ffff, #ffcc00, #ff0055);
-    background-size: 800% 800%;
-    animation: GradientBG 20s ease infinite;
-    color: white;
-}
+@keyframes GradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-@keyframes GradientBG {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-}
-
-/* PAGES */
 .page {position:absolute;width:100%;top:0;left:0;transition:0.5s;}
-.hidden {opacity:0;pointer-events:none;transform:scale(1.05);}
+.hidden {opacity:0; pointer-events:none; transform:scale(1.05);}
 
-/* HERO */
-.hero {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
+.hero {height:100vh; display:flex; justify-content:center; align-items:center; text-align:center;}
+.hero h1 {font-size:70px; background:linear-gradient(45deg,#ff00ff,#00ffff,#ffff00); -webkit-background-clip:text; color:transparent; animation: GlowText 2s ease-in-out infinite alternate;}
+@keyframes GlowText {0% {text-shadow:0 0 5px #ff00ff,0 0 10px #00ffff;} 100% {text-shadow:0 0 20px #ff00ff,0 0 40px #00ffff;}}
 
-.hero h1 {
-    font-size: 70px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: GlowText 2s ease-in-out infinite alternate;
-}
+.btn {padding:15px 40px; border-radius:12px; background:linear-gradient(45deg,#ff00ff,#00ffff,#ffff00); cursor:pointer; display:inline-block; margin-top:20px; transition:0.3s; font-weight:bold; color:black;}
+.btn:hover {transform:scale(1.1);}
 
-@keyframes GlowText {
-    0% {text-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff;}
-    100% {text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;}
-}
+.cards {display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:40px;}
+.card, .product, .category {background:rgba(255,255,255,0.1); padding:25px; border-radius:20px; width:220px; text-align:center; cursor:pointer; transition:0.4s; color:white; box-shadow:0 0 10px rgba(255,255,255,0.3);}
+.card:hover, .product:hover, .category:hover {transform:translateY(-8px) scale(1.05); box-shadow:0 0 25px rgba(255,255,255,0.7);}
+.price {margin:10px 0; font-weight:bold; color:#ff0;}
+.section {padding:80px 20px; text-align:center;}
+.back {position:fixed; top:20px; left:20px; cursor:pointer; font-weight:bold; color:white;}
 
-.btn {
-    padding: 15px 40px;
-    border-radius: 12px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
-    cursor: pointer;
-    display: inline-block;
-    margin-top: 20px;
-    transition: 0.3s;
-    font-weight: bold;
-    color: black;
-}
-
-.btn:hover {transform: scale(1.1);}
-
-/* CARDS */
-.cards {display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin-top:40px;}
-.card, .product, .category {
-    background: rgba(255,255,255,0.1);
-    padding:25px;
-    border-radius:20px;
-    width:220px;
-    text-align:center;
-    cursor:pointer;
-    transition:0.4s;
-    color:white;
-    box-shadow:0 0 10px rgba(255,255,255,0.3);
-}
-
-.card:hover, .product:hover, .category:hover {
-    transform:translateY(-8px) scale(1.05);
-    box-shadow:0 0 25px rgba(255,255,255,0.7);
-}
-
-.price {margin:10px 0;font-weight:bold;color:#ff0;}
-
-.section {padding:80px 20px;text-align:center;}
-
-.back {
-    position:fixed;top:20px;left:20px;cursor:pointer;
-    font-weight:bold;color:white;
-}
-
-.modal {
-    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-    background: rgba(0,0,0,0.9); padding:30px; border-radius:20px;
-    display:none; color:white; text-align:center;
-    z-index:100;
-}
-
-.modal .btn {margin-top:20px;}
+/* MODAL PURCHASE */
+.modal {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background: rgba(0,0,0,0.95); padding:30px; border-radius:20px; display:none; color:white; text-align:center; width:320px; max-width:90%; box-shadow:0 0 40px rgba(255,255,255,0.5);}
+.modal h2 {margin-bottom:20px;}
+.modal input {width:100%; padding:12px; margin:8px 0; border-radius:8px; border:none; outline:none; font-size:16px;}
+.modal .modal-price {font-size:24px; margin:15px 0; color:#0ff;}
+.modal .apply-btn {background:#0ff; color:black; font-weight:bold; margin-top:5px;}
+.close-btn {background:#ff00ff; color:white; margin-top:15px; display:inline-block; padding:10px 20px; border-radius:12px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -141,13 +72,19 @@ body {
     </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL PURCHASE -->
 <div id="modal" class="modal">
-    <p>Кнопка "Купить" нажата!</p>
-    <div class="btn" onclick="closeModal()">Закрыть</div>
+    <h2 id="modalTitle">Товар</h2>
+    <div class="modal-price" id="modalPrice">0₽</div>
+    <input type="text" id="nickname" placeholder="Введите ваш ник">
+    <input type="text" id="promo" placeholder="Промокод">
+    <div class="btn apply-btn" onclick="applyPromo()">Применить промокод</div>
+    <div class="btn close-btn" onclick="closeModal()">Закрыть</div>
 </div>
 
 <script>
+let currentPrice = 0;
+
 function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
@@ -159,24 +96,38 @@ function openCategory(type){
     const title=document.getElementById('title');
     list.innerHTML='';
     let items=[];
-    if(type==='priv'){title.innerText='Привилегии'; items=[{name:'VIP',price:'199₽'},{name:'PREMIUM',price:'499₽'},{name:'DELUXE',price:'999₽'}];}
-    if(type==='items'){title.innerText='Прочее'; items=[{name:'Деньги',price:'149₽'},{name:'Кейс',price:'99₽'}];}
-    if(type==='bonus'){title.innerText='Бонусы'; items=[{name:'x2 Деньги',price:'199₽'},{name:'Буст',price:'129₽'}];}
+    if(type==='priv'){title.innerText='Привилегии'; items=[{name:'VIP',price:199},{name:'PREMIUM',price:499},{name:'DELUXE',price:999}];}
+    if(type==='items'){title.innerText='Прочее'; items=[{name:'Деньги',price:149},{name:'Кейс',price:99}];}
+    if(type==='bonus'){title.innerText='Бонусы'; items=[{name:'x2 Деньги',price:199},{name:'Буст',price:129}];}
     items.forEach((item,i)=>{
         const el=document.createElement('div');
         el.className='product';
-        el.innerHTML=`<h3>${item.name}</h3><div class="price">${item.price}</div><div class="btn" onclick="openModal('${item.name}')">Купить</div>`;
+        el.innerHTML=`<h3>${item.name}</h3><div class="price">${item.price}₽</div><div class="btn" onclick="openModal('${item.name}',${item.price})">Купить</div>`;
         list.appendChild(el);
-        setTimeout(()=>el.style.opacity=1, i*150);
+        setTimeout(()=>el.style.opacity=1,i*150);
     });
 }
 
-function openModal(name){
+function openModal(name,price){
+    currentPrice = price;
     document.getElementById('modal').style.display='block';
-    document.getElementById('modal').querySelector('p').innerText='Вы выбрали: '+name;
+    document.getElementById('modalTitle').innerText = name;
+    document.getElementById('modalPrice').innerText = price+'₽';
+    document.getElementById('nickname').value = '';
+    document.getElementById('promo').value = '';
 }
 
-function closeModal(){document.getElementById('modal').style.display='none';}
+function closeModal(){
+    document.getElementById('modal').style.display='none';
+}
+
+function applyPromo(){
+    const code = document.getElementById('promo').value.trim().toUpperCase();
+    let newPrice = currentPrice;
+    if(code==='DISCOUNT10'){newPrice = Math.round(currentPrice*0.9);}
+    else if(code==='DISCOUNT50'){newPrice = Math.round(currentPrice*0.5);}
+    document.getElementById('modalPrice').innerText = newPrice+'₽';
+}
 </script>
 
 </body>
