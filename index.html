@@ -1,97 +1,92 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TileRush</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<title>Kaspi Clicker</title>
 <style>
-/* Базовые стили */
-html, body {margin:0; padding:0; font-family:'Montserrat',sans-serif; background:#121212; color:white; overflow-x:hidden;}
-.page {position:absolute; width:100%; top:0; left:0; transition:0.5s;}
-.hidden {opacity:0; pointer-events:none; transform:scale(1.02);}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}.header { padding: 15px; }
 
-/* HERO */
-.hero {height:100vh; display:flex; justify-content:center; align-items:center; text-align:center; flex-direction:column;}
-.hero h1 {font-size:64px; background:linear-gradient(90deg,#7b2cff,#00f0ff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;}
+.card { background: linear-gradient(135deg, #ff3b6b, #ff7a00); border-radius: 20px; padding: 20px; color: white; font-size: 22px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; }
 
-/* BUTTON */
-.btn {padding:12px 32px; border-radius:10px; background:linear-gradient(90deg,#7b2cff,#00f0ff); color:white; cursor:pointer; transition:0.3s; font-weight:600; border:none; margin-top:15px;}
-.btn:hover {transform:scale(1.05);}
+.balance { font-size: 28px; margin-top: 10px; }
 
-/* CARDS */
-.cards {display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:40px;}
-.category {background: rgba(255,255,255,0.05); backdrop-filter:blur(10px); padding:25px; border-radius:20px; width:220px; text-align:center; cursor:pointer; transition:0.3s;}
-.category:hover {transform:translateY(-5px) scale(1.03); box-shadow:0 0 25px rgba(123,44,255,0.4);}
-.back {position:fixed; top:20px; left:20px; cursor:pointer; font-weight:bold; color:white;}
+.menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; }
 
-/* КРУТАЯ КАРТОЧКА ТОВАРА */
-.product-card {background: rgba(20,20,30,0.95); border-radius:20px; padding:20px; width:300px; max-width:90%; margin:20px auto; text-align:center; box-shadow:0 0 30px rgba(123,44,255,0.5); transition:0.3s;}
-.product-card:hover {transform:translateY(-5px) scale(1.02);}
-.product-card h3 {font-size:24px; margin-bottom:10px;}
-.product-card .price {color:#00f0ff; font-weight:600; margin-bottom:15px;}
-.product-card .buy-btn {padding:12px 24px; background:linear-gradient(90deg,#7b2cff,#00f0ff); border:none; border-radius:12px; color:white; font-weight:600; cursor:pointer; transition:0.3s;}
-.product-card .buy-btn:hover {transform:scale(1.05);}
-</style>
+.menu-item { background: white; border-radius: 12px; padding: 15px; text-align: center; font-size: 12px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+
+.bottom { position: fixed; bottom: 0; width: 100%; display: flex; background: white; border-top: 1px solid #ddd; }
+
+.tab { flex: 1; padding: 15px; text-align: center; font-size: 14px; cursor: pointer; }
+
+.active { color: red; }
+
+.shop { padding: 15px; }
+
+.upgrade { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+button { background: red; color: white; border: none; padding: 8px 12px; border-radius: 8px; } </style>
+
 </head>
-<body>
-
-<!-- HOME -->
-<div id="home" class="page">
-    <div class="hero">
-        <h1>TileRush</h1>
-        <p>Минималистичный премиум магазин</p>
-        <button class="btn" onclick="showPage('categories')">Открыть магазин</button>
+<body><div class="header">
+    <div class="card" onclick="earn()">
+        💳 Нажми на карту
+        <div class="balance" id="money">0 ₸</div>
     </div>
-</div>
-
-<!-- CATEGORIES -->
-<div id="categories" class="page hidden">
-    <div class="back" onclick="showPage('home')">← Назад</div>
-    <div class="cards">
-        <div class="category" onclick="openCategory('priv')">Привилегии</div>
-        <div class="category" onclick="openCategory('items')">Прочее</div>
-        <div class="category" onclick="openCategory('bonus')">Бонусы</div>
+</div><div id="main">
+    <div class="menu">
+        <div class="menu-item">QR</div>
+        <div class="menu-item">Банк</div>
+        <div class="menu-item">Платежи</div>
+        <div class="menu-item">Переводы</div>
     </div>
-</div>
+</div><div id="shop" style="display:none">
+    <div class="shop">
+        <div class="upgrade">
+            Доход +1
+            <button onclick="buy(1)">100 ₸</button>
+        </div>
+        <div class="upgrade">
+            Доход +5
+            <button onclick="buy(5)">500 ₸</button>
+        </div>
+    </div>
+</div><div class="bottom">
+    <div class="tab active" onclick="openTab('main', this)">Главная</div>
+    <div class="tab" onclick="openTab('shop', this)">Прокачка</div>
+</div><script>
+let money = 0;
+let income = 1;
 
-<!-- PRODUCTS -->
-<div id="products" class="page hidden">
-    <div class="back" onclick="showPage('categories')">← Назад</div>
-    <div id="productList"></div>
-</div>
-
-<script>
-function showPage(id){
-    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+function earn() {
+    money += income;
+    update();
 }
 
-function openCategory(type){
-    showPage('products');
-    const list=document.getElementById('productList');
-    list.innerHTML='';
-    let items=[];
-    if(type==='priv'){items=[{name:'VIP',price:199},{name:'PREMIUM',price:499},{name:'DELUXE',price:999}];}
-    if(type==='items'){items=[{name:'Деньги',price:149},{name:'Кейс',price:99}];}
-    if(type==='bonus'){items=[{name:'x2 Деньги',price:199},{name:'Буст',price:129}];}
-
-    items.forEach(item=>{
-        const card=document.createElement('div');
-        card.className='product-card';
-        card.innerHTML=`<h3>${item.name}</h3>
-                        <div class="price">${item.price}₽</div>
-                        <button class="buy-btn" onclick="buyTelegram('${item.name}',${item.price})">Купить</button>`;
-        list.appendChild(card);
-    });
+function buy(amount) {
+    let price = amount * 100;
+    if (money >= price) {
+        money -= price;
+        income += amount;
+        update();
+    }
 }
 
-function buyTelegram(name,price){
-    // готовое сообщение в Telegram
-    const text = encodeURIComponent(`Хочу купить "${name}" за ${price}₽ на TileRush`);
-    window.open(`https://t.me/seventeenlanguage?text=${text}`, '_blank');
+function update() {
+    document.getElementById('money').innerText = money + ' ₸';
 }
-</script>
 
-</body>
+function openTab(tab, el) {
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('shop').style.display = 'none';
+
+    document.getElementById(tab).style.display = 'block';
+
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+}
+</script></body>
 </html>
